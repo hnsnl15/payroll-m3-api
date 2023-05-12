@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant permission to Maven wrapper
-        run: chmod -x ./mvnw
+        run: chmod +x mvnw
 
       - name: Build and test
         run: |
