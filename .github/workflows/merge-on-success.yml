@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17.0.6'
-          distribution: 'temurin'
+          distribution: 'adopt'
 
       - name: Grant permission to Maven wrapper
         run: chmod +x mvnw
