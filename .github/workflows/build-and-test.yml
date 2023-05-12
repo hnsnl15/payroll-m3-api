@@ -1,4 +1,4 @@
-name: Merge on Success
+name: Build & test
 
 on:
   push:
