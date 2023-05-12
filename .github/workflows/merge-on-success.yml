@@ -31,7 +31,6 @@ jobs:
         if: ${{ success() }}
         run: |
           git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.email }}"
           git checkout main
           git merge --no-ff ${{ github.ref }}
           git push origin main
