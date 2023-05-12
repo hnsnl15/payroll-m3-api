@@ -19,12 +19,13 @@ jobs:
           java-version: '17.0.6'
           distribution: 'adopt'
 
-      - name: Grant permission to Maven wrapper
-        run: chmod +x mvnw
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.8.2
 
       - name: Build and test
-        run: |
-          sudo ./mvnw clean test
+        run: mvn clean install
 
       - name: Merge into main
         if: ${{ success() }}
