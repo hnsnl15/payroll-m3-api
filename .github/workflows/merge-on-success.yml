@@ -23,7 +23,8 @@ jobs:
         run: chmod -x ./mvnw
 
       - name: Build and test
-        run: ./mvnw clean test
+        run: |
+          sudo ./mvnw clean test
 
       - name: Merge into main
         if: ${{ success() }}
