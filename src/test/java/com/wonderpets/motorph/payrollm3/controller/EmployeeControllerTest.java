@@ -40,5 +40,12 @@ public class EmployeeControllerTest {
         ).andExpect(status().isOk());
     }
 
+    @Test
+    public void testRetrieveEmployee() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/employees/1")
+                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+        ).andExpect(status().isOk());
+    }
+
 
 }
