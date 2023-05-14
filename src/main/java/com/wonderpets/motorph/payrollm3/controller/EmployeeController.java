@@ -38,4 +38,9 @@ public class EmployeeController {
         return employeeService.deleteEmployeeById(id);
     }
 
+    @PutMapping("/v1/employees/{id}")
+    public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employee employee) {
+        return employeeService.updateEmployeeById(id, employee);
+    }
+
 }
