@@ -163,5 +163,32 @@ public class EmployeeControllerTest {
         mockPutOption("/api/v1/employees/12345", employee).andExpect(status().isOk());
     }
 
+    @Test
+    void updateEmployee_WhenIdIsNotAvailable_ShouldReturnBadRequest() throws Exception {
+        Employee employee = new Employee(
+                12345L,
+                "Doe",
+                "John",
+                "1988-01-01",
+                "123 Main St",
+                "555-1234",
+                "123-45-6789",
+                "987654321",
+                "123-456-789",
+                "67890",
+                "active",
+                "manager",
+                "Jane Smith",
+                50000.0,
+                2000.0,
+                1000.0,
+                500.0,
+                10000.0,
+                25.0
+        );
+        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
+        mockPutOption("/api/v1/employees/0", employee).andExpect(status().isBadRequest());
+    }
+
 
 }
