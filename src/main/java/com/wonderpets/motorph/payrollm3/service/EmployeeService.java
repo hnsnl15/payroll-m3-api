@@ -5,6 +5,7 @@ import com.wonderpets.motorph.payrollm3.model.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
@@ -17,6 +18,10 @@ public class EmployeeService {
 
     public List<Employee> retrieveAllEmployee() {
         return employeeRepository.findAll();
+    }
+
+    public Optional<Employee> retrieveEmployee(long id) {
+        return employeeRepository.findById(id);
     }
 
 }
