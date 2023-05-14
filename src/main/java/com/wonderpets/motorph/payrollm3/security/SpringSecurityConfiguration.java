@@ -5,7 +5,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.wonderpets.motorph.payrollm3.role.Role;
+import com.wonderpets.motorph.payrollm3.model.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -37,11 +37,10 @@ import java.util.UUID;
 @Configuration
 public class SpringSecurityConfiguration {
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/create-account", "/auth")
+                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/create-account")
                 .permitAll());
         httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -74,10 +73,20 @@ public class SpringSecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
         var jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+//        List<Employee> employees = employeeRepository.findAll();
+//        for (Employee employee : employees) {
+//            User user = (User) User.withUsername(employee.getUsername())
+//                    .password(employee.getPassword())
+//                    .passwordEncoder(str -> passwordEncoder().encode(str))
+//                    .roles(String.valueOf(employee.getUserRole()))
+//                    .build();
+//            jdbcUserDetailsManager.createUser(user);
+//        }
+
         User admin = (User) User.withUsername("admin")
                 .password("123")
                 .passwordEncoder(str -> passwordEncoder().encode(str))
-                .roles(String.valueOf(Role.ADMIN))
+                .roles(Role.ADMIN.toString())
                 .build();
         jdbcUserDetailsManager.createUser(admin);
         return jdbcUserDetailsManager;
