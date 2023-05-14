@@ -63,7 +63,7 @@ a pull request.
 
 ## License
 
-This project is licensed under the LICENCE.md. See the [LICENSE](LICENCE.md) file for more information.
+This project is licensed under the LICENCE. See the [LICENSE](LICENCE.md) file for more information.
 
 ---
 
