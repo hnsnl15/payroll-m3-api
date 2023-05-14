@@ -1,3 +1,29 @@
+CREATE TABLE IF NOT EXISTS employee (
+    emp_no BIGINT PRIMARY KEY,
+    role VARCHAR(50),
+    username VARCHAR(50),
+    password VARCHAR(50),
+    last_name VARCHAR(50),
+    first_name VARCHAR(50),
+    birthday DATE,
+    address VARCHAR(600),
+    phone_number VARCHAR(60),
+    sss_no VARCHAR(60),
+    philhealth_no VARCHAR(60),
+    tin_no VARCHAR(60),
+    pagibig_no VARCHAR(60),
+    status VARCHAR(20),
+    position VARCHAR(50),
+    immediate_supervisor VARCHAR(50),
+    basic_salary DECIMAL(10,2),
+    rice_subsidy DECIMAL(10,2),
+    phone_allowance DECIMAL(10,2),
+    clothing_allowance DECIMAL(10,2),
+    gross_semi_monthly_rate DECIMAL(10,2),
+    hourly_rate DECIMAL(10,2)
+);
+
+
 INSERT INTO employee (emp_no, role, username, password, last_name, first_name, birthday, address, phone_number, sss_no, philhealth_no, tin_no, pagibig_no, status, position, immediate_supervisor, basic_salary, rice_subsidy, phone_allowance, clothing_allowance, gross_semi_monthly_rate, hourly_rate)
 VALUES (10001, 'USER', 'crisostomo_10001', '123', 'Crisostomo', 'Jose', '1988-02-14', '17/85 Stracke Via Suite 042, Poblacion, Las Piñas 4783 Dinagat Islands', '918-621-603', '49-1632020-8', '382189453145', '317-674-022-000', '441093369646', 'Regular', 'HR Manager', 'N/A', 62670.0, 1500.0, 1000.0, 1000.0, 31335.0, 373.04);
 
