@@ -4,7 +4,10 @@ import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
 import com.wonderpets.motorph.payrollm3.model.Employee;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +30,20 @@ public class EmployeeService {
 
     public ResponseEntity<Void> deleteEmployeeById(long id) {
         employeeRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<Void> createEmployee(@RequestBody Employee employee) {
+        Optional<Employee> emp = employeeRepository.findByUsername(employee.getUsername());
+        if (emp.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Employee createdEmployee = employeeRepository.save(employee);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdEmployee.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
 
 }
