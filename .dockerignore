@@ -6,3 +6,6 @@
 
 ### VS Code ###
 .vscode/
+
+### ENV ###
+/src/main/resources/application-*.properties
