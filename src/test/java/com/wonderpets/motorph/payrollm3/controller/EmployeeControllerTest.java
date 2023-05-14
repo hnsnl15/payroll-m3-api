@@ -2,9 +2,7 @@ package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonderpets.motorph.payrollm3.model.Employee;
-import com.wonderpets.motorph.payrollm3.service.EmployeeService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,9 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class EmployeeControllerTest {
-
-    private final EmployeeService employeeService = Mockito.mock(EmployeeService.class);
-    private final EmployeeController employeeController = new EmployeeController(employeeService);
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,6 +43,16 @@ public class EmployeeControllerTest {
         String requestBody = new ObjectMapper().writeValueAsString(employee);
 
         return mockMvc.perform(MockMvcRequestBuilders.post(urlTemplate)
+                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+    }
+
+    private ResultActions mockPutOption(String urlTemplate, Employee employee) throws Exception {
+        String requestBody = new ObjectMapper().writeValueAsString(employee);
+
+        return mockMvc.perform(MockMvcRequestBuilders.put(urlTemplate)
                 .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -105,7 +110,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void createEmployee_WhenUsernameIsNotAvailable_ShouldThrowException() throws Exception {
+    void createEmployee_WhenUsernameIsNotAvailable_ShouldReturnBadRequest() throws Exception {
         Employee employee = new Employee(
                 12345L,
                 "Doe",
@@ -129,6 +134,33 @@ public class EmployeeControllerTest {
         );
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateEmployee_WhenIdIsAvailable() throws Exception {
+        Employee employee = new Employee(
+                12345L,
+                "Doe",
+                "John",
+                "1988-01-01",
+                "123 Main St",
+                "555-1234",
+                "123-45-6789",
+                "987654321",
+                "123-456-789",
+                "67890",
+                "active",
+                "manager",
+                "Jane Smith",
+                50000.0,
+                2000.0,
+                1000.0,
+                500.0,
+                10000.0,
+                25.0
+        );
+        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
+        mockPutOption("/api/v1/employees/12345", employee).andExpect(status().isOk());
     }
 
 
