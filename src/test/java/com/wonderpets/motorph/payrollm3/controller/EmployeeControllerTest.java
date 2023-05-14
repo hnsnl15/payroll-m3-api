@@ -35,22 +35,40 @@ public class EmployeeControllerTest {
         return "Basic " + base64Credentials;
     }
 
-    private ResultActions mockOption(String urlTemplate) throws Exception {
+    private ResultActions mockGetOption(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
+                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+        );
+    }
+
+    private ResultActions mockPostOption(String urlTemplate) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.post(urlTemplate)
+                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+        );
+    }
+
+    private ResultActions mockDeleteOption(String urlTemplate) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.delete(urlTemplate)
                 .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
         );
     }
 
     @Test
     public void testRetrieveAllEmployee() throws Exception {
-        mockOption("/api/v1/employees").andExpect(status().isOk());
+        mockGetOption("/api/v1/employees").andExpect(status().isOk());
     }
 
     @Test
-    public void testRetrieveEmployee() throws Exception {
-        var result = mockOption("/api/v1/employees/1");
+    public void testRetrieveEmployeeById() throws Exception {
+        var result = mockGetOption("/api/v1/employees/1");
         Assertions.assertEquals("null", result.andReturn().getResponse().getContentAsString(), "Result returns null");
         result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteEmployeeById() throws Exception {
+        mockDeleteOption("/api/v1/employees/0").andExpect(status().isOk());
+        mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
 
 
