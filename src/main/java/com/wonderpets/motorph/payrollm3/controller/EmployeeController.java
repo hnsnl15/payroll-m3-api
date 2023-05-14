@@ -28,6 +28,11 @@ public class EmployeeController {
         return employeeService.retrieveEmployee(id);
     }
 
+    @PostMapping("/v1/create-employee")
+    public ResponseEntity<Void> createEmployee(@RequestBody Employee employee) {
+        return employeeService.createEmployee(employee);
+    }
+
     @DeleteMapping("/v1/employees/{id}")
     public ResponseEntity<Void> deleteEmployeeById(@PathVariable long id) {
         return employeeService.deleteEmployeeById(id);
