@@ -4,6 +4,7 @@ import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
 import com.wonderpets.motorph.payrollm3.model.Employee;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,8 +35,7 @@ public class EmployeeService {
     }
 
     public ResponseEntity<Void> createEmployee(@RequestBody Employee employee) {
-        Optional<Employee> emp = employeeRepository.findByUsername(employee.getUsername());
-        if (emp.isPresent()) {
+        if (employeeRepository.findByUsername(employee.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
         Employee createdEmployee = employeeRepository.save(employee);
@@ -45,5 +45,14 @@ public class EmployeeService {
                 .toUri();
         return ResponseEntity.created(location).build();
     }
+
+    public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employee employee) {
+        if (employeeRepository.findById(id).isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        employeeRepository.save(employee);
+        return ResponseEntity.ok().build();
+    }
+
 
 }
