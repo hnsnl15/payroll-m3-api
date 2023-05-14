@@ -1,6 +1,7 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
 import com.wonderpets.motorph.payrollm3.service.EmployeeService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,7 +48,9 @@ public class EmployeeControllerTest {
 
     @Test
     public void testRetrieveEmployee() throws Exception {
-        mockOption("/api/v1/employees/1").andExpect(status().isOk());
+        var result = mockOption("/api/v1/employees/1");
+        Assertions.assertEquals("null", result.andReturn().getResponse().getContentAsString(), "Result returns null");
+        result.andExpect(status().isOk());
     }
 
 
