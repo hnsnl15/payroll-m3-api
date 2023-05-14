@@ -1,5 +1,6 @@
 package com.wonderpets.motorph.payrollm3.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
@@ -18,7 +19,8 @@ public class Employee extends Person {
 
     private String lastName;
     private String firstName;
-    private LocalDate birthday;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private String birthday;
     private String address;
     private String phoneNumber;
     private String sssNo;
@@ -39,7 +41,7 @@ public class Employee extends Person {
         super();
     }
 
-    public Employee(long empNo, String lastName, String firstName, LocalDate birthday, String address, String phoneNumber,
+    public Employee(long empNo, String lastName, String firstName, String birthday, String address, String phoneNumber,
                     String sssNo, String philhealthNo, String tinNo, String pagibigNo, String status, String position,
                     String immediateSupervisor, double basicSalary, double riceSubsidy,
                     double phoneAllowance, double clothingAllowance, double grossSemiMonthlyRate,
@@ -47,7 +49,7 @@ public class Employee extends Person {
         super(empNo, Role.USER.toString(), generateUsername(lastName, empNo), "123");
         this.lastName = lastName;
         this.firstName = firstName;
-        this.birthday = stringToLocalDateConverter(String.valueOf(birthday));
+        this.birthday = formatStringDate(birthday);
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.sssNo = sssNo;
@@ -69,12 +71,12 @@ public class Employee extends Person {
         return name.replace(" ", "").toLowerCase() + "_" + id;
     }
 
-    private LocalDate stringToLocalDateConverter(String dateString) {
+    private String formatStringDate(String dateString) {
         List<String> patterns = List.of("yyyy-MM-dd", "MM/dd/yyyy");
         for (String pattern : patterns) {
             try {
                 LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern(pattern));
-                return LocalDate.parse(localDate.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                return LocalDate.parse(localDate.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")).toString();
             } catch (DateTimeParseException ignored) {
             }
         }
@@ -101,12 +103,12 @@ public class Employee extends Person {
         this.firstName = firstName;
     }
 
-    public LocalDate getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = stringToLocalDateConverter(String.valueOf(birthday));
+    public void setBirthday(String birthday) {
+        this.birthday = formatStringDate(birthday);
     }
 
     public String getAddress() {
