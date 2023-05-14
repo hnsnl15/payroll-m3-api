@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
@@ -33,18 +34,20 @@ public class EmployeeControllerTest {
         return "Basic " + base64Credentials;
     }
 
+    private ResultActions mockOption(String urlTemplate) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
+                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+        );
+    }
+
     @Test
     public void testRetrieveAllEmployee() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/employees")
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
-        ).andExpect(status().isOk());
+        mockOption("/api/v1/employees").andExpect(status().isOk());
     }
 
     @Test
     public void testRetrieveEmployee() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/employees/1")
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
-        ).andExpect(status().isOk());
+        mockOption("/api/v1/employees/1").andExpect(status().isOk());
     }
 
 
