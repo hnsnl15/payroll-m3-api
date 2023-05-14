@@ -67,4 +67,4 @@ This project is licensed under the LICENCE.md. See the [LICENSE](LICENCE.md) fil
 
 ---
 
-Feel free to customize the template according to your project's specific details and requirements.
+🚀🚀🚀
