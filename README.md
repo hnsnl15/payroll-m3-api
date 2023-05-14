@@ -24,7 +24,7 @@ mvn clean package
 To run the application locally, execute the following command:
 
 ```shell
-java -jar /target/payroll-m3-api.jar
+java -jar ./target/payroll-m3-api.jar
 ```
 
 The application will be accessible at [http://localhost:8080](http://localhost:8080).
