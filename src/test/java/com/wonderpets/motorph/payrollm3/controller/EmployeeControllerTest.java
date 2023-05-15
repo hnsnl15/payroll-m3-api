@@ -137,13 +137,19 @@ public class EmployeeControllerTest {
 
     @Test
     void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
-        mockDeleteOption("/api/v1/employees/1").andReturn();
+        this.employeeRepository.deleteById(1L);
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
         clearUserTable();
     }
 
     @Test
     void createEmployee_WhenUsernameIsNotAvailable_ShouldReturnBadRequest() throws Exception {
+        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createEmployee_WithPasswordLessThan_Char() throws Exception {
+        employee.setPassword("123");
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isBadRequest());
     }
 
