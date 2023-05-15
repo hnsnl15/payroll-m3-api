@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -72,14 +71,12 @@ public class EmployeeControllerTest {
 
     @Test
     public void testRetrieveEmployeeById() throws Exception {
-        var result = mockGetOption("/api/v1/employees/1");
-        assertEquals("null", result.andReturn().getResponse().getContentAsString(), "Result returns null");
-        result.andExpect(status().isOk());
+        mockGetOption("/api/v1/employees/1").andExpect(status().isNotFound());
     }
 
     @Test
     public void testDeleteEmployeeById() throws Exception {
-        mockDeleteOption("/api/v1/employees/0").andExpect(status().isOk());
+        mockDeleteOption("/api/v1/employees/0").andExpect(status().isNotFound());
         mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
 
