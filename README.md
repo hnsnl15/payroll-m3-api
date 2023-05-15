@@ -49,6 +49,12 @@ The application will be accessible at [http://localhost:8080](http://localhost:8
 Once the application is up and running, you can access the API documentation
 at [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
 
+## HAL Explorer Support
+
+For HAL (Hypertext Application Language) support, you can use HAL Explorer. HAL Explorer provides a user-friendly
+interface for exploring and interacting with HAL APIs. You can access HAL Explorer
+at [http://localhost:8080/explorer](http://localhost:8080/explorer).
+
 ## Contributing
 
 Contributions are welcome! If you find any issues or have suggestions for improvement, please create an issue or submit
