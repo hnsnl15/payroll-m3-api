@@ -1,5 +1,6 @@
 package com.wonderpets.motorph.payrollm3.service;
 
+import com.wonderpets.motorph.payrollm3.exception.UserAlreadyCreatedException;
 import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
 import com.wonderpets.motorph.payrollm3.model.Employee;
@@ -44,7 +45,7 @@ public class EmployeeService {
 
     public ResponseEntity<Void> createEmployee(@RequestBody Employee employee) {
         if (employeeRepository.findByUsername(employee.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().build();
+            throw new UserAlreadyCreatedException("Username is not available.");
         }
         Employee createdEmployee = employeeRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
