@@ -1,6 +1,7 @@
 package com.wonderpets.motorph.payrollm3.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "person_type")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Employee extends Person {
 
     private String lastName;
@@ -41,12 +43,12 @@ public class Employee extends Person {
         super();
     }
 
-    public Employee(long empNo, String lastName, String firstName, String birthday, String address, String phoneNumber,
+    public Employee(long empNo, String lastName, String firstName, String password, String birthday, String address, String phoneNumber,
                     String sssNo, String philhealthNo, String tinNo, String pagibigNo, String status, String position,
                     String immediateSupervisor, double basicSalary, double riceSubsidy,
                     double phoneAllowance, double clothingAllowance, double grossSemiMonthlyRate,
                     double hourlyRate) {
-        super(empNo, Role.USER.toString(), generateUsername(lastName, empNo), "123");
+        super(empNo, Role.USER.toString(), generateUsername(lastName, empNo), password);
         this.lastName = lastName;
         this.firstName = firstName;
         this.birthday = formatStringDate(birthday);

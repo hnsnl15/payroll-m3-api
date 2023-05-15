@@ -6,8 +6,10 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.wonderpets.motorph.payrollm3.model.Role;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.config.Customizer;
@@ -40,7 +42,7 @@ public class SpringSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/create-account")
+                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/create-account", "/auth-token")
                 .permitAll());
         httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -63,7 +65,29 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(
+            @Value("${spring.datasource.url}") String url,
+            @Value("${spring.datasource.username}") String username,
+            @Value("${spring.datasource.password}") String password,
+            @Value("${db.profile.source}") String dbSource
+    ) {
+        if (dbSource.equalsIgnoreCase("mysql")) {
+            return createMySQLDataSource(url, username, password);
+        } else {
+            return createH2DataSource();
+        }
+    }
+
+    private DataSource createMySQLDataSource(String url, String username, String password) {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+        return dataSource;
+    }
+
+    private DataSource createH2DataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
@@ -71,24 +95,20 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        var jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-//        List<Employee> employees = employeeRepository.findAll();
-//        for (Employee employee : employees) {
-//            User user = (User) User.withUsername(employee.getUsername())
-//                    .password(employee.getPassword())
-//                    .passwordEncoder(str -> passwordEncoder().encode(str))
-//                    .roles(String.valueOf(employee.getUserRole()))
-//                    .build();
-//            jdbcUserDetailsManager.createUser(user);
-//        }
+    public UserDetailsService userDetailsService(DataSource dataSource,
+                                                 @Value("${jwt.admin.username}") String username,
+                                                 @Value("${jwt.admin.password}") String password
 
-        User admin = (User) User.withUsername("admin")
-                .password("123")
-                .passwordEncoder(str -> passwordEncoder().encode(str))
-                .roles(Role.ADMIN.toString())
-                .build();
-        jdbcUserDetailsManager.createUser(admin);
+    ) {
+        var jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+        if (!jdbcUserDetailsManager.userExists(username)) {
+            User admin = (User) User.withUsername(username)
+                    .password(password)
+                    .passwordEncoder(str -> passwordEncoder().encode(str))
+                    .roles(Role.ADMIN.toString())
+                    .build();
+            jdbcUserDetailsManager.createUser(admin);
+        }
         return jdbcUserDetailsManager;
     }
 
@@ -96,7 +116,6 @@ public class SpringSecurityConfiguration {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public KeyPair keyPair() throws NoSuchAlgorithmException {

@@ -1,9 +1,9 @@
 package com.wonderpets.motorph.payrollm3.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.Size;
 
 @MappedSuperclass
 public class Person {
@@ -13,7 +13,8 @@ public class Person {
     private long id;
     private String role;
     private String username;
-    @JsonIgnore
+
+    @Size(min = 8, message = "Password cannot be less than 8 characters.")
     private String password;
 
     public Person(long id, String role, String username, String password) {
