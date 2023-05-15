@@ -1,11 +1,12 @@
 # Payroll-M3-API
 
-A Spring Boot API to perform basic CRUD operation for a fake company called MotorPH.
+A Spring Boot API to perform basic CRUD operations for a fake company called MotorPH.
 
 ## Prerequisites
 
 - JDK 17 or higher
 - Docker
+- Docker Compose
 
 ## Getting Started
 
@@ -29,24 +30,16 @@ java -jar ./target/payroll-m3-api.jar
 
 The application will be accessible at [http://localhost:8080](http://localhost:8080).
 
-## Docker Support
+## Docker Compose Support
 
-You can also run the application using Docker.
+You can also run the application using Docker Compose.
 
-### Building the Docker Image
+### Running the Docker Compose
 
-To build the Docker image, execute the following command:
-
-```shell
-docker build -t wonderpets-payroll-m3-api .
-```
-
-### Running the Docker Container
-
-To run the Docker container, execute the following command:
+To run the application using Docker Compose, execute the following command:
 
 ```shell
-docker run -p 8080:8080 wonderpets-payroll-m3-api
+docker-compose up
 ```
 
 The application will be accessible at [http://localhost:8080](http://localhost:8080).

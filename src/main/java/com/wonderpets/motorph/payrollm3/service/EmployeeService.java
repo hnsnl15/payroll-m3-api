@@ -1,5 +1,6 @@
 package com.wonderpets.motorph.payrollm3.service;
 
+import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
 import com.wonderpets.motorph.payrollm3.model.Employee;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +23,22 @@ public class EmployeeService {
     }
 
     public List<Employee> retrieveAllEmployee() {
-        return employeeRepository.findAll();
+        return this.employeeRepository.findAll();
     }
 
     public Optional<Employee> retrieveEmployee(long id) {
-        return employeeRepository.findById(id);
+        Optional<Employee> employee = this.employeeRepository.findById(id);
+        if (employee.isEmpty()) {
+            throw new UserNotFoundException("Employee is not in the record.");
+        }
+        return employee;
     }
 
     public ResponseEntity<Void> deleteEmployeeById(long id) {
-        employeeRepository.deleteById(id);
+        if (this.employeeRepository.findById(id).isEmpty()) {
+            throw new UserNotFoundException("Unable to delete employee, employee not found.");
+        }
+        this.employeeRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
