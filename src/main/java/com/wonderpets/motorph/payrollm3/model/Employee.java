@@ -41,12 +41,12 @@ public class Employee extends Person {
         super();
     }
 
-    public Employee(long empNo, String lastName, String firstName, String birthday, String address, String phoneNumber,
+    public Employee(long empNo, String lastName, String firstName, String password, String birthday, String address, String phoneNumber,
                     String sssNo, String philhealthNo, String tinNo, String pagibigNo, String status, String position,
                     String immediateSupervisor, double basicSalary, double riceSubsidy,
                     double phoneAllowance, double clothingAllowance, double grossSemiMonthlyRate,
                     double hourlyRate) {
-        super(empNo, Role.USER.toString(), generateUsername(lastName, empNo), "123");
+        super(empNo, Role.USER.toString(), generateUsername(lastName, empNo), password);
         this.lastName = lastName;
         this.firstName = firstName;
         this.birthday = formatStringDate(birthday);
