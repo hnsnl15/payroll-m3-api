@@ -13,6 +13,7 @@ public class Person {
     private long id;
     private String role;
     private String username;
+
     @Size(min = 8, message = "Password cannot be less than 8 characters.")
     private String password;
 
