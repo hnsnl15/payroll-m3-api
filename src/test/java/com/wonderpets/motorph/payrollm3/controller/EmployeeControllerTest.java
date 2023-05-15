@@ -1,13 +1,19 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
 import com.wonderpets.motorph.payrollm3.model.Employee;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -22,14 +28,50 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class EmployeeControllerTest {
+
+    private final Employee employee = new Employee(
+            1L,
+            "Doe",
+            "John",
+            "password",
+            "1988-01-01",
+            "123 Main St",
+            "555-1234",
+            "123-45-6789",
+            "987654321",
+            "123-456-789",
+            "67890",
+            "active",
+            "manager",
+            "Jane Smith",
+            50000.0,
+            2000.0,
+            1000.0,
+            500.0,
+            10000.0,
+            25.0
+    );
+    @Autowired
+    private UserDetailsService userDetailsService;
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public static String generateBasicAuthHeader(String username, String password) {
         String credentials = username + ":" + password;
         byte[] credentialsBytes = credentials.getBytes(StandardCharsets.UTF_8);
         String base64Credentials = Base64.getEncoder().encodeToString(credentialsBytes);
         return "Basic " + base64Credentials;
+    }
+
+    private void clearUserTable() {
+        String username = "doe_1";
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (userDetails != null) {
+            JdbcUserDetailsManager jdbcUserDetailsManager = (JdbcUserDetailsManager) userDetailsService;
+            jdbcUserDetailsManager.deleteUser(username);
+        }
     }
 
     private ResultActions mockGetOption(String urlTemplate) throws Exception {
@@ -64,127 +106,56 @@ public class EmployeeControllerTest {
         );
     }
 
+    @BeforeEach()
+    public void createData() {
+        this.employeeRepository.save(employee);
+    }
+
+    @AfterEach
+    public void clearDataPerTest() {
+        employeeRepository.deleteById(1L);
+    }
+
     @Test
     public void testRetrieveAllEmployee() throws Exception {
         mockGetOption("/api/v1/employees").andExpect(status().isOk());
+        clearUserTable();
     }
 
     @Test
     public void testRetrieveEmployeeById() throws Exception {
-        mockGetOption("/api/v1/employees/1").andExpect(status().isNotFound());
+        mockGetOption("/api/v1/employees/2").andExpect(status().isNotFound());
+        mockGetOption("/api/v1/employees/1").andExpect(status().isOk());
     }
 
     @Test
     public void testDeleteEmployeeById() throws Exception {
-        mockDeleteOption("/api/v1/employees/0").andExpect(status().isNotFound());
+        mockDeleteOption("/api/v1/employees/1").andExpect(status().isOk());
+        mockDeleteOption("/api/v1/employees/1").andExpect(status().isNotFound());
         mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
 
     @Test
     void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
-        Employee employee = new Employee(
-                12345L,
-                "Doe",
-                "John",
-                "1988-01-01",
-                "123 Main St",
-                "555-1234",
-                "123-45-6789",
-                "987654321",
-                "123-456-789",
-                "67890",
-                "active",
-                "manager",
-                "Jane Smith",
-                50000.0,
-                2000.0,
-                1000.0,
-                500.0,
-                10000.0,
-                25.0
-        );
+        mockDeleteOption("/api/v1/employees/1").andReturn();
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
+        clearUserTable();
     }
 
     @Test
     void createEmployee_WhenUsernameIsNotAvailable_ShouldReturnBadRequest() throws Exception {
-        Employee employee = new Employee(
-                12345L,
-                "Doe",
-                "John",
-                "1988-01-01",
-                "123 Main St",
-                "555-1234",
-                "123-45-6789",
-                "987654321",
-                "123-456-789",
-                "67890",
-                "active",
-                "manager",
-                "Jane Smith",
-                50000.0,
-                2000.0,
-                1000.0,
-                500.0,
-                10000.0,
-                25.0
-        );
-        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isBadRequest());
     }
 
     @Test
     void updateEmployee_WhenIdIsAvailable() throws Exception {
-        Employee employee = new Employee(
-                12345L,
-                "Doe",
-                "John",
-                "1988-01-01",
-                "123 Main St",
-                "555-1234",
-                "123-45-6789",
-                "987654321",
-                "123-456-789",
-                "67890",
-                "active",
-                "manager",
-                "Jane Smith",
-                50000.0,
-                2000.0,
-                1000.0,
-                500.0,
-                10000.0,
-                25.0
-        );
-        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
-        mockPutOption("/api/v1/employees/12345", employee).andExpect(status().isOk());
+        mockPutOption("/api/v1/employees/1", employee).andExpect(status().isOk());
     }
 
     @Test
     void updateEmployee_WhenIdIsNotAvailable_ShouldReturnBadRequest() throws Exception {
-        Employee employee = new Employee(
-                12345L,
-                "Doe",
-                "John",
-                "1988-01-01",
-                "123 Main St",
-                "555-1234",
-                "123-45-6789",
-                "987654321",
-                "123-456-789",
-                "67890",
-                "active",
-                "manager",
-                "Jane Smith",
-                50000.0,
-                2000.0,
-                1000.0,
-                500.0,
-                10000.0,
-                25.0
-        );
-        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
-        mockPutOption("/api/v1/employees/0", employee).andExpect(status().isBadRequest());
+        mockDeleteOption("/api/v1/employees/1").andReturn();
+        mockPutOption("/api/v1/employees/1", employee).andExpect(status().isBadRequest());
     }
 
 
