@@ -1,13 +1,19 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
+import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -15,14 +21,27 @@ import java.util.stream.Collectors;
 public class JwtAuthController {
 
     private final JwtEncoder jwtEncoder;
+    private final DataSource dataSource;
+    private final PasswordEncoder passwordEncoder;
 
-    public JwtAuthController(JwtEncoder jwtEncoder) {
+    public JwtAuthController(JwtEncoder jwtEncoder, DataSource dataSource, PasswordEncoder passwordEncoder) {
         this.jwtEncoder = jwtEncoder;
+        this.dataSource = dataSource;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/auth-token")
-    public JwtResponse auth(Authentication authentication) {
+    public JwtResponse auth(@RequestBody LoginForm loginForm, Authentication authentication) {
+        if (!authenticate(loginForm.getUsername(), loginForm.getPassword())) {
+            throw new IllegalArgumentException("Invalid username or password");
+        }
         return new JwtResponse(createToken(authentication));
+    }
+
+    private boolean authenticate(String username, String password) {
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+        UserDetails userDetails = jdbcUserDetailsManager.loadUserByUsername(username);
+        return userDetails != null && passwordEncoder.matches(password, userDetails.getPassword());
     }
 
     private String createToken(Authentication authentication) {
