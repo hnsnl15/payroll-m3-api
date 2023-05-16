@@ -77,8 +77,8 @@ public class EmployeeService {
             throw new IllegalArgumentException("Password cannot be null.");
         }
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
-        userDetailsService(employee.getUsername(), encodedPassword);
         employee.setPassword(encodedPassword);
+        userDetailsService(employee.getUsername(), encodedPassword);
         Employee createdEmployee = employeeRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
