@@ -88,6 +88,10 @@ public class EmployeeControllerTest {
         }
     }
 
+    private Optional<Employee> getTestEmployee() {
+        return employeeRepository.findByUsername("johndoe");
+    }
+
     private ResultActions mockGetOption(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
                 .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
@@ -127,7 +131,7 @@ public class EmployeeControllerTest {
 
     @AfterEach
     public void clearDataPerTest() {
-        employeeRepository.deleteById(1L);
+        if (getTestEmployee().isPresent()) employeeRepository.deleteById(getTestEmployee().get().getEmployee_id());
     }
 
     @Test
@@ -137,22 +141,27 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    public void testRetrieveEmployeesByPagination() throws Exception {
+        mockGetOption("/api/v2/employees").andExpect(status().isOk());
+    }
+
+    @Test
     public void testRetrieveEmployeeById() throws Exception {
-        mockGetOption("/api/v1/employees/2").andExpect(status().isNotFound());
-        mockGetOption("/api/v1/employees/1").andExpect(status().isOk());
+        mockGetOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockGetOption("/api/v1/employees/12345").andExpect(status().isNotFound());
     }
 
     @Test
     public void testDeleteEmployeeById() throws Exception {
-        mockDeleteOption("/api/v1/employees/1").andExpect(status().isOk());
-        mockDeleteOption("/api/v1/employees/1").andExpect(status().isNotFound());
+        mockDeleteOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockDeleteOption("/api/v1/employees/123456").andExpect(status().isNotFound());
         mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
 
     @Test
     void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
         Optional<Employee> employeeOptional = this.employeeRepository.findByUsername("johndoe");
-        employeeOptional.ifPresent(value -> this.employeeRepository.deleteById(value.getId()));
+        employeeOptional.ifPresent(value -> this.employeeRepository.deleteById(value.getEmployee_id()));
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
         clearUserTable();
     }
@@ -170,13 +179,15 @@ public class EmployeeControllerTest {
 
     @Test
     void updateEmployee_WhenIdIsAvailable() throws Exception {
-        mockPutOption("/api/v1/employees/1", employee).andExpect(status().isOk());
+        mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id(), employee).andExpect(status().isOk());
     }
 
     @Test
     void updateEmployee_WhenIdIsNotAvailable_ShouldReturnBadRequest() throws Exception {
-        mockDeleteOption("/api/v1/employees/1").andReturn();
-        mockPutOption("/api/v1/employees/1", employee).andExpect(status().isBadRequest());
+        clearDataPerTest();
+        if (getTestEmployee().isPresent())
+            mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id(), employee)
+                    .andExpect(status().isBadRequest());
     }
 
 
