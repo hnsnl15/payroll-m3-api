@@ -11,10 +11,10 @@ import java.util.List;
 public class Attendance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_sequence")
-    @SequenceGenerator(name = "attendance_id_generator", sequenceName = "attendance_sequence", initialValue = 10001)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    @Column(name = "date_of_attendance")
     private String date;
     private String timeIn;
     private String timeOut;
@@ -22,7 +22,7 @@ public class Attendance {
     private boolean isAbsent;
 
     @ManyToOne
-    @JoinColumn(name = "emp_id", referencedColumnName = "emp_id")
+    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
     private Employee employee;
 
 
