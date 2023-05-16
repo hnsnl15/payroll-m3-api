@@ -49,7 +49,11 @@ public class EmployeeService {
     }
 
     public List<Employee> retrieveAllEmployee() {
-        return this.employeeRepository.findAll();
+        List<Employee> employees = this.employeeRepository.findAll();
+        for (Employee employee : employees) {
+            userDetailsService(employee.getUsername(), employee.getPassword());
+        }
+        return employees;
     }
 
     public List<Employee> retrieveEmployees(int page, int size) {
