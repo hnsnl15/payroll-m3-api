@@ -1,5 +1,6 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
+import com.wonderpets.motorph.payrollm3.exception.InvalidUsernameOrPassword;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,7 @@ public class JwtAuthController {
     @PostMapping("/api/auth-token")
     public JwtResponse auth(@RequestBody LoginForm loginForm) {
         if (!authenticate(loginForm)) {
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new InvalidUsernameOrPassword("Invalid username or password");
         }
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginForm.getUsername(),
                 loginForm.getPassword());
