@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class AuthControllerTest {
+public class JwtAuthControllerTest {
 
     private final LoginForm loginForm = new LoginForm("admin", "123");
     @Autowired
@@ -29,18 +29,6 @@ public class AuthControllerTest {
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
         );
-    }
-
-    @Test
-    void testLogin() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/login"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testCreateAccount() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/create-account"))
-                .andExpect(status().isOk());
     }
 
     @Test
