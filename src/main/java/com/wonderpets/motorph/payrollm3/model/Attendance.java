@@ -11,25 +11,37 @@ import java.util.List;
 public class Attendance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long att_id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_sequence")
+    @SequenceGenerator(name = "attendance_id_generator", sequenceName = "attendance_sequence", initialValue = 10001)
     private long id;
     private String name;
     private String date;
     private String timeIn;
     private String timeOut;
+    private boolean isLate;
+    private boolean isAbsent;
 
     @ManyToOne
-    @JoinColumn(name = "emp_no")
+    @JoinColumn(name = "emp_id", referencedColumnName = "emp_id")
     private Employee employee;
 
 
-    public Attendance(int id, String name, String date, String timeIn, String timeOut) {
-        this.id = id;
+    public Attendance(String name, String date, String timeIn, String timeOut, boolean isLate, boolean isAbsent) {
         this.name = name;
         this.date = formatStringDate(date);
         this.timeIn = timeIn;
         this.timeOut = timeOut;
+        this.isLate = isLate;
+        this.isAbsent = isAbsent;
+    }
+
+    public Attendance(String name, String date, String timeIn, String timeOut) {
+        this.name = name;
+        this.date = formatStringDate(date);
+        this.timeIn = timeIn;
+        this.timeOut = timeOut;
+        this.isLate = false;
+        this.isAbsent = false;
     }
 
     private String formatStringDate(String dateString) {
@@ -42,14 +54,6 @@ public class Attendance {
             }
         }
         throw new IllegalArgumentException("Invalid date format: " + dateString);
-    }
-
-    public long getAtt_id() {
-        return att_id;
-    }
-
-    public void setAtt_id(long att_id) {
-        this.att_id = att_id;
     }
 
     public long getId() {
@@ -90,5 +94,21 @@ public class Attendance {
 
     public void setTimeOut(String timeOut) {
         this.timeOut = timeOut;
+    }
+
+    public boolean isAbsent() {
+        return isAbsent;
+    }
+
+    public void setAbsent(boolean absent) {
+        isAbsent = absent;
+    }
+
+    public boolean isLate() {
+        return isLate;
+    }
+
+    public void setLate(boolean late) {
+        isLate = late;
     }
 }
