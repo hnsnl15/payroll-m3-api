@@ -33,7 +33,7 @@ public class JwtAuthController {
 
     @PostMapping("/api/auth-token")
     public JwtResponse auth(@RequestBody LoginForm loginForm) {
-        if (!authenticate(loginForm.getUsername(), loginForm.getPassword())) {
+        if (!authenticate(loginForm)) {
             throw new IllegalArgumentException("Invalid username or password");
         }
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginForm.getUsername(),
@@ -41,10 +41,10 @@ public class JwtAuthController {
         return new JwtResponse(createToken(authentication));
     }
 
-    private boolean authenticate(String username, String password) {
+    private boolean authenticate(LoginForm loginForm) {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        UserDetails userDetails = jdbcUserDetailsManager.loadUserByUsername(username);
-        return userDetails != null && passwordEncoder.matches(password, userDetails.getPassword());
+        UserDetails userDetails = jdbcUserDetailsManager.loadUserByUsername(loginForm.getUsername());
+        return userDetails != null && passwordEncoder.matches(loginForm.getPassword(), userDetails.getPassword());
     }
 
     private String createToken(Authentication authentication) {
