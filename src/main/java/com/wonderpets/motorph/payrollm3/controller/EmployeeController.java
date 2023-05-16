@@ -24,9 +24,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/v1/employees")
-    public List<EntityModel<Employee>> retrieveAllEmployee() {
-        List<Employee> employees = this.employeeService.retrieveAllEmployee();
+    private List<EntityModel<Employee>> mapEmployeesIntoEntityModels(List<Employee> employees) {
         List<EntityModel<Employee>> entityModels = new ArrayList<>();
         for (Employee employee : employees) {
             EntityModel<Employee> employeeEntityModel = EntityModel.of(employee);
@@ -36,6 +34,19 @@ public class EmployeeController {
             entityModels.add(employeeEntityModel);
         }
         return entityModels;
+    }
+
+    @GetMapping("/v1/employees")
+    public List<EntityModel<Employee>> retrieveAllEmployee() {
+        List<Employee> employees = this.employeeService.retrieveAllEmployee();
+        return mapEmployeesIntoEntityModels(employees);
+    }
+
+    @GetMapping("/v2/employees")
+    public List<EntityModel<Employee>> retrieveEmployees(@RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam int size) {
+        List<Employee> employees = this.employeeService.retrieveEmployees(page, size);
+        return mapEmployeesIntoEntityModels(employees);
     }
 
     @GetMapping("/v1/employees/{id}")
