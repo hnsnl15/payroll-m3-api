@@ -1,9 +1,7 @@
 package com.wonderpets.motorph.payrollm3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
 @MappedSuperclass
@@ -11,7 +9,9 @@ import jakarta.validation.constraints.Size;
 public class Person {
 
     @Id
-    @Column(name = "emp_no")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_sequence")
+    @SequenceGenerator(name = "employee_id_generator", sequenceName = "employee_sequence", initialValue = 10001)
+    @Column(name = "emp_id")
     private long id;
     private String role;
     private String username;
@@ -19,8 +19,7 @@ public class Person {
     @Size(min = 8, message = "Password cannot be less than 8 characters.")
     private String password;
 
-    public Person(long id, String role, String username, String password) {
-        this.id = id;
+    public Person(String role, String username, String password) {
         this.role = role(role);
         this.username = username;
         this.password = password;
