@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EmployeeControllerTest {
 
     private final Employee employee = new Employee(
-            1L,
             "Doe",
             "John",
             "password",
@@ -80,7 +80,7 @@ public class EmployeeControllerTest {
     }
 
     private void clearUserTable() {
-        String username = "doe_1";
+        String username = "johndoe";
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (userDetails != null) {
             JdbcUserDetailsManager jdbcUserDetailsManager = (JdbcUserDetailsManager) userDetailsService;
@@ -151,7 +151,8 @@ public class EmployeeControllerTest {
 
     @Test
     void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
-        this.employeeRepository.deleteById(1L);
+        Optional<Employee> employeeOptional = this.employeeRepository.findByUsername("johndoe");
+        employeeOptional.ifPresent(value -> this.employeeRepository.deleteById(value.getId()));
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
         clearUserTable();
     }
