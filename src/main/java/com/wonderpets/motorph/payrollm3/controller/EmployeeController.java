@@ -29,7 +29,7 @@ public class EmployeeController {
         for (Employee employee : employees) {
             EntityModel<Employee> employeeEntityModel = EntityModel.of(employee);
             WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
-                    .retrieveEmployee(employee.getId()));
+                    .retrieveEmployee(employee.getEmployee_id()));
             employeeEntityModel.add(linkBuilder.withSelfRel());
             entityModels.add(employeeEntityModel);
         }
@@ -44,7 +44,7 @@ public class EmployeeController {
 
     @GetMapping("/v2/employees")
     public List<EntityModel<Employee>> retrieveEmployees(@RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam int size) {
+                                                         @RequestParam(defaultValue = "5") int size) {
         List<Employee> employees = this.employeeService.retrieveEmployees(page, size);
         return mapEmployeesIntoEntityModels(employees);
     }
