@@ -3,10 +3,12 @@ package com.wonderpets.motorph.payrollm3.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
 import com.wonderpets.motorph.payrollm3.model.Employee;
+import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -51,6 +53,10 @@ public class EmployeeControllerTest {
             10000.0,
             25.0
     );
+    @Value("${jwt.admin.username}")
+    private String adminUsername;
+    @Value("${jwt.admin.password}")
+    private String adminPassword;
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
@@ -58,11 +64,19 @@ public class EmployeeControllerTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public static String generateBasicAuthHeader(String username, String password) {
-        String credentials = username + ":" + password;
+    @Autowired
+    private JwtAuthController jwtAuthController;
+
+    private String generateBasicAuthHeader() {
+        String credentials = adminUsername + ":" + adminPassword;
         byte[] credentialsBytes = credentials.getBytes(StandardCharsets.UTF_8);
         String base64Credentials = Base64.getEncoder().encodeToString(credentialsBytes);
         return "Basic " + base64Credentials;
+    }
+
+    private String generateJwtAuthHeader() {
+        LoginForm loginForm = new LoginForm(adminUsername, adminPassword);
+        return "Bearer " + jwtAuthController.auth(loginForm).token();
     }
 
     private void clearUserTable() {
@@ -76,7 +90,7 @@ public class EmployeeControllerTest {
 
     private ResultActions mockGetOption(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
         );
     }
 
@@ -84,7 +98,7 @@ public class EmployeeControllerTest {
         String requestBody = new ObjectMapper().writeValueAsString(employee);
 
         return mockMvc.perform(MockMvcRequestBuilders.post(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
         );
@@ -94,7 +108,7 @@ public class EmployeeControllerTest {
         String requestBody = new ObjectMapper().writeValueAsString(employee);
 
         return mockMvc.perform(MockMvcRequestBuilders.put(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
         );
@@ -102,7 +116,7 @@ public class EmployeeControllerTest {
 
     private ResultActions mockDeleteOption(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.delete(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
         );
     }
 
