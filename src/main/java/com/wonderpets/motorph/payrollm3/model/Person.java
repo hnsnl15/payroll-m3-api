@@ -1,11 +1,13 @@
 package com.wonderpets.motorph.payrollm3.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.Size;
 
 @MappedSuperclass
+@JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public class Person {
 
     @Id
