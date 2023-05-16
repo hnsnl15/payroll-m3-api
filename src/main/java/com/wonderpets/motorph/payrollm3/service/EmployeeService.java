@@ -6,6 +6,9 @@ import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
 import com.wonderpets.motorph.payrollm3.model.Employee;
 import com.wonderpets.motorph.payrollm3.model.Role;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -46,11 +49,13 @@ public class EmployeeService {
     }
 
     public List<Employee> retrieveAllEmployee() {
-        List<Employee> employees = this.employeeRepository.findAll();
-        for (Employee employee : employees) {
-            userDetailsService(employee.getUsername(), "password");
-        }
-        return employees;
+        return this.employeeRepository.findAll();
+    }
+
+    public List<Employee> retrieveEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Employee> employeePage = this.employeeRepository.findAll(pageable);
+        return employeePage.getContent();
     }
 
     public Optional<Employee> retrieveEmployee(long id) {
