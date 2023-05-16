@@ -1,11 +1,9 @@
 package com.wonderpets.motorph.payrollm3.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,6 +36,10 @@ public class Employee extends Person {
     private BigDecimal clothingAllowance;
     private BigDecimal grossSemiMonthlyRate;
     private BigDecimal hourlyRate;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Attendance> attendances;
 
     public Employee() {
         super();
