@@ -1,7 +1,10 @@
 package com.wonderpets.motorph.payrollm3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.Size;
 
 @MappedSuperclass
@@ -9,10 +12,8 @@ import jakarta.validation.constraints.Size;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_sequence")
-    @SequenceGenerator(name = "employee_id_generator", sequenceName = "employee_sequence", initialValue = 10001)
-    @Column(name = "emp_id")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long employee_id;
     private String role;
     private String username;
 
@@ -39,12 +40,12 @@ public class Person {
     }
 
 
-    public long getId() {
-        return id;
+    public long getEmployee_id() {
+        return employee_id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setEmployee_id(long employee_id) {
+        this.employee_id = employee_id;
     }
 
     public String getUserRole() {
