@@ -15,7 +15,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "person_type")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Employee extends Person {
+public class Employees extends Person {
 
     private String lastName;
     private String firstName;
@@ -41,15 +41,15 @@ public class Employee extends Person {
     @JsonIgnore
     private List<Attendance> attendances;
 
-    public Employee() {
+    public Employees() {
         super();
     }
 
-    public Employee(String lastName, String firstName, String password, String birthday, String address, String phoneNumber,
-                    String sssNo, String philhealthNo, String tinNo, String pagibigNo, String status, String position,
-                    String immediateSupervisor, double basicSalary, double riceSubsidy,
-                    double phoneAllowance, double clothingAllowance, double grossSemiMonthlyRate,
-                    double hourlyRate) {
+    public Employees(String lastName, String firstName, String password, String birthday, String address, String phoneNumber,
+                     String sssNo, String philhealthNo, String tinNo, String pagibigNo, String status, String position,
+                     String immediateSupervisor, double basicSalary, double riceSubsidy,
+                     double phoneAllowance, double clothingAllowance, double grossSemiMonthlyRate,
+                     double hourlyRate) {
         super(Role.USER.toString(), generateUsername(firstName, lastName), password);
         this.lastName = lastName;
         this.firstName = firstName;
