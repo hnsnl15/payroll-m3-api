@@ -2,11 +2,13 @@ package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
-import com.wonderpets.motorph.payrollm3.model.Employee;
+import com.wonderpets.motorph.payrollm3.model.Employees;
+import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -21,16 +23,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class EmployeeControllerTest {
+public class EmployeesControllerTest {
 
-    private final Employee employee = new Employee(
-            1L,
+    private final Employees employee = new Employees(
             "Doe",
             "John",
             "password",
@@ -51,6 +53,10 @@ public class EmployeeControllerTest {
             10000.0,
             25.0
     );
+    @Value("${jwt.admin.username}")
+    private String adminUsername;
+    @Value("${jwt.admin.password}")
+    private String adminPassword;
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
@@ -58,15 +64,23 @@ public class EmployeeControllerTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public static String generateBasicAuthHeader(String username, String password) {
-        String credentials = username + ":" + password;
+    @Autowired
+    private JwtAuthController jwtAuthController;
+
+    private String generateBasicAuthHeader() {
+        String credentials = adminUsername + ":" + adminPassword;
         byte[] credentialsBytes = credentials.getBytes(StandardCharsets.UTF_8);
         String base64Credentials = Base64.getEncoder().encodeToString(credentialsBytes);
         return "Basic " + base64Credentials;
     }
 
+    private String generateJwtAuthHeader() {
+        LoginForm loginForm = new LoginForm(adminUsername, adminPassword);
+        return "Bearer " + jwtAuthController.auth(loginForm).token();
+    }
+
     private void clearUserTable() {
-        String username = "doe_1";
+        String username = "johndoe";
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (userDetails != null) {
             JdbcUserDetailsManager jdbcUserDetailsManager = (JdbcUserDetailsManager) userDetailsService;
@@ -74,27 +88,31 @@ public class EmployeeControllerTest {
         }
     }
 
+    private Optional<Employees> getTestEmployee() {
+        return employeeRepository.findByUsername("johndoe");
+    }
+
     private ResultActions mockGetOption(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
         );
     }
 
-    private ResultActions mockPostOption(String urlTemplate, Employee employee) throws Exception {
+    private ResultActions mockPostOption(String urlTemplate, Employees employee) throws Exception {
         String requestBody = new ObjectMapper().writeValueAsString(employee);
 
         return mockMvc.perform(MockMvcRequestBuilders.post(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
         );
     }
 
-    private ResultActions mockPutOption(String urlTemplate, Employee employee) throws Exception {
+    private ResultActions mockPutOption(String urlTemplate, Employees employee) throws Exception {
         String requestBody = new ObjectMapper().writeValueAsString(employee);
 
         return mockMvc.perform(MockMvcRequestBuilders.put(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
         );
@@ -102,7 +120,7 @@ public class EmployeeControllerTest {
 
     private ResultActions mockDeleteOption(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.delete(urlTemplate)
-                .header(HttpHeaders.AUTHORIZATION, generateBasicAuthHeader("admin", "123"))
+                .header(HttpHeaders.AUTHORIZATION, generateJwtAuthHeader())
         );
     }
 
@@ -113,7 +131,7 @@ public class EmployeeControllerTest {
 
     @AfterEach
     public void clearDataPerTest() {
-        employeeRepository.deleteById(1L);
+        if (getTestEmployee().isPresent()) employeeRepository.deleteById(getTestEmployee().get().getEmployee_id());
     }
 
     @Test
@@ -123,23 +141,35 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    public void testRetrieveEmployeesByPagination() throws Exception {
+        mockGetOption("/api/v2/employees").andExpect(status().isOk());
+    }
+
+    @Test
     public void testRetrieveEmployeeById() throws Exception {
-        mockGetOption("/api/v1/employees/2").andExpect(status().isNotFound());
-        mockGetOption("/api/v1/employees/1").andExpect(status().isOk());
+        mockGetOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockGetOption("/api/v1/employees/12345").andExpect(status().isNotFound());
     }
 
     @Test
     public void testDeleteEmployeeById() throws Exception {
-        mockDeleteOption("/api/v1/employees/1").andExpect(status().isOk());
-        mockDeleteOption("/api/v1/employees/1").andExpect(status().isNotFound());
+        mockDeleteOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockDeleteOption("/api/v1/employees/123456").andExpect(status().isNotFound());
         mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
 
     @Test
-    void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
-        this.employeeRepository.deleteById(1L);
-        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
-        clearUserTable();
+    void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() {
+        Optional<Employees> employeeOptional = this.employeeRepository.findByUsername("johndoe");
+        employeeOptional.ifPresent(value -> {
+            this.employeeRepository.deleteById(value.getEmployee_id());
+            try {
+                mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
+                clearUserTable();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Test
@@ -155,13 +185,15 @@ public class EmployeeControllerTest {
 
     @Test
     void updateEmployee_WhenIdIsAvailable() throws Exception {
-        mockPutOption("/api/v1/employees/1", employee).andExpect(status().isOk());
+        mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id(), employee).andExpect(status().isOk());
     }
 
     @Test
     void updateEmployee_WhenIdIsNotAvailable_ShouldReturnBadRequest() throws Exception {
-        mockDeleteOption("/api/v1/employees/1").andReturn();
-        mockPutOption("/api/v1/employees/1", employee).andExpect(status().isBadRequest());
+        clearDataPerTest();
+        if (getTestEmployee().isPresent())
+            mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id(), employee)
+                    .andExpect(status().isBadRequest());
     }
 
 

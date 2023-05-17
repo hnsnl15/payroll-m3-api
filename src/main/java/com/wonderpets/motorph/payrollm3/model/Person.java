@@ -1,24 +1,29 @@
 package com.wonderpets.motorph.payrollm3.model;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 @MappedSuperclass
+@JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public class Person {
 
     @Id
-    @Column(name = "emp_no")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Generated(GenerationTime.INSERT)
+    private long employee_id;
     private String role;
     private String username;
 
     @Size(min = 8, message = "Password cannot be less than 8 characters.")
     private String password;
 
-    public Person(long id, String role, String username, String password) {
-        this.id = id;
+    public Person(String role, String username, String password) {
         this.role = role(role);
         this.username = username;
         this.password = password;
@@ -38,12 +43,12 @@ public class Person {
     }
 
 
-    public long getId() {
-        return id;
+    public long getEmployee_id() {
+        return employee_id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setEmployee_id(long employee_id) {
+        this.employee_id = employee_id;
     }
 
     public String getUserRole() {

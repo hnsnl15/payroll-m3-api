@@ -38,6 +38,13 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidUsernameOrPassword.class)
+    public final ResponseEntity<Object> invalidUsernameOrPasswordException(Exception exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), exception.getMessage(),
+                webRequest.getDescription(false), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException exception,

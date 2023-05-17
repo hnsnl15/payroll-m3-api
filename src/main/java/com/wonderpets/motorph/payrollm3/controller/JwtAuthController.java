@@ -1,6 +1,8 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
+import com.wonderpets.motorph.payrollm3.exception.InvalidUsernameOrPassword;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,18 +32,20 @@ public class JwtAuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/auth-token")
-    public JwtResponse auth(@RequestBody LoginForm loginForm, Authentication authentication) {
-        if (!authenticate(loginForm.getUsername(), loginForm.getPassword())) {
-            throw new IllegalArgumentException("Invalid username or password");
+    @PostMapping("/api/auth-token")
+    public JwtResponse auth(@RequestBody LoginForm loginForm) {
+        if (!authenticate(loginForm)) {
+            throw new InvalidUsernameOrPassword("Invalid username or password");
         }
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginForm.getUsername(),
+                loginForm.getPassword());
         return new JwtResponse(createToken(authentication));
     }
 
-    private boolean authenticate(String username, String password) {
+    private boolean authenticate(LoginForm loginForm) {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        UserDetails userDetails = jdbcUserDetailsManager.loadUserByUsername(username);
-        return userDetails != null && passwordEncoder.matches(password, userDetails.getPassword());
+        UserDetails userDetails = jdbcUserDetailsManager.loadUserByUsername(loginForm.getUsername());
+        return userDetails != null && passwordEncoder.matches(loginForm.getPassword(), userDetails.getPassword());
     }
 
     private String createToken(Authentication authentication) {

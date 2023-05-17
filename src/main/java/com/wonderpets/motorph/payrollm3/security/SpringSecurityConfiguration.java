@@ -14,6 +14,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -37,19 +38,31 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
 @Configuration
+@EnableWebSecurity
 public class SpringSecurityConfiguration {
+
+    private final String[] WHITELIST = {
+            "/api/v1/auth/login",
+            "/api/v1/auth/create-account",
+            "/api/auth-token",
+            "/swagger-ui/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/create-account", "/auth-token")
-                .permitAll());
-        httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+                .requestMatchers(WHITELIST).permitAll()
+                .anyRequest().authenticated());
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.headers().frameOptions().sameOrigin();
         httpSecurity.httpBasic(Customizer.withDefaults());
-        httpSecurity.csrf().disable();
         httpSecurity.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+        httpSecurity.headers().frameOptions().sameOrigin();
+        httpSecurity.csrf().disable();
         return httpSecurity.build();
     }
 

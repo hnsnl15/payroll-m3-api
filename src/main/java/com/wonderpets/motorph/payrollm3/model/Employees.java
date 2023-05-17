@@ -1,11 +1,9 @@
 package com.wonderpets.motorph.payrollm3.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +15,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "person_type")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Employee extends Person {
+public class Employees extends Person {
 
     private String lastName;
     private String firstName;
@@ -39,16 +37,20 @@ public class Employee extends Person {
     private BigDecimal grossSemiMonthlyRate;
     private BigDecimal hourlyRate;
 
-    public Employee() {
+    @OneToMany(mappedBy = "employee")
+    @JsonIgnore
+    private List<Attendance> attendances;
+
+    public Employees() {
         super();
     }
 
-    public Employee(long empNo, String lastName, String firstName, String password, String birthday, String address, String phoneNumber,
-                    String sssNo, String philhealthNo, String tinNo, String pagibigNo, String status, String position,
-                    String immediateSupervisor, double basicSalary, double riceSubsidy,
-                    double phoneAllowance, double clothingAllowance, double grossSemiMonthlyRate,
-                    double hourlyRate) {
-        super(empNo, Role.USER.toString(), generateUsername(lastName, empNo), password);
+    public Employees(String lastName, String firstName, String password, String birthday, String address, String phoneNumber,
+                     String sssNo, String philhealthNo, String tinNo, String pagibigNo, String status, String position,
+                     String immediateSupervisor, double basicSalary, double riceSubsidy,
+                     double phoneAllowance, double clothingAllowance, double grossSemiMonthlyRate,
+                     double hourlyRate) {
+        super(Role.USER.toString(), generateUsername(firstName, lastName), password);
         this.lastName = lastName;
         this.firstName = firstName;
         this.birthday = formatStringDate(birthday);
@@ -69,8 +71,10 @@ public class Employee extends Person {
         this.hourlyRate = doubleToBigDecimalConverter(hourlyRate);
     }
 
-    private static String generateUsername(String name, long id) {
-        return name.replace(" ", "").toLowerCase() + "_" + id;
+    private static String generateUsername(String firstName, String lastName) {
+        String username = firstName.strip().replace(" ", "")
+                + lastName.strip().replace(" ", "");
+        return username.toLowerCase();
     }
 
     private String formatStringDate(String dateString) {

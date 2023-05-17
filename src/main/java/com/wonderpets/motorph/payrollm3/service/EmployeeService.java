@@ -3,14 +3,18 @@ package com.wonderpets.motorph.payrollm3.service;
 import com.wonderpets.motorph.payrollm3.exception.UserAlreadyCreatedException;
 import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
-import com.wonderpets.motorph.payrollm3.model.Employee;
+import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.Role;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
@@ -45,19 +50,23 @@ public class EmployeeService {
         }
     }
 
-    public List<Employee> retrieveAllEmployee() {
-        List<Employee> employees = this.employeeRepository.findAll();
-        for (Employee employee : employees) {
-            userDetailsService(employee.getUsername(), "password");
+    public List<Employees> retrieveAllEmployee() {
+        List<Employees> employees = this.employeeRepository.findAll();
+        for (Employees employee : employees) {
+            userDetailsService(employee.getUsername(), employee.getPassword());
         }
         return employees;
     }
 
-    public Optional<Employee> retrieveEmployee(long id) {
-        Optional<Employee> employee = this.employeeRepository.findById(id);
-        if (employee.isEmpty()) {
-            throw new UserNotFoundException("Employee is not in the record.");
-        }
+    public List<Employees> retrieveEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Employees> employeePage = this.employeeRepository.findAll(pageable);
+        return employeePage.getContent();
+    }
+
+    public Optional<Employees> retrieveEmployee(long id) {
+        Optional<Employees> employee = this.employeeRepository.findById(id);
+        if (employee.isEmpty()) throw new UserNotFoundException("Employee is not in the record.");
         return employee;
     }
 
@@ -69,7 +78,7 @@ public class EmployeeService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Void> createEmployee(@Valid @RequestBody Employee employee) {
+    public ResponseEntity<Void> createEmployee(@Valid @RequestBody Employees employee) {
         if (employeeRepository.findByUsername(employee.getUsername()).isPresent()) {
             throw new UserAlreadyCreatedException("Username is not available.");
         }
@@ -77,17 +86,17 @@ public class EmployeeService {
             throw new IllegalArgumentException("Password cannot be null.");
         }
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
-        userDetailsService(employee.getUsername(), encodedPassword);
         employee.setPassword(encodedPassword);
-        Employee createdEmployee = employeeRepository.save(employee);
+        userDetailsService(employee.getUsername(), encodedPassword);
+        Employees createdEmployee = employeeRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdEmployee.getId())
+                .buildAndExpand(createdEmployee.getEmployee_id())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
 
-    public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employee employee) {
+    public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employees employee) {
         if (employeeRepository.findById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

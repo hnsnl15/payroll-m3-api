@@ -1,6 +1,6 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
-import com.wonderpets.motorph.payrollm3.model.Employee;
+import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.service.EmployeeService;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -24,24 +24,35 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/v1/employees")
-    public List<EntityModel<Employee>> retrieveAllEmployee() {
-        List<Employee> employees = this.employeeService.retrieveAllEmployee();
-        List<EntityModel<Employee>> entityModels = new ArrayList<>();
-        for (Employee employee : employees) {
-            EntityModel<Employee> employeeEntityModel = EntityModel.of(employee);
+    private List<EntityModel<Employees>> mapEmployeesIntoEntityModels(List<Employees> employees) {
+        List<EntityModel<Employees>> entityModels = new ArrayList<>();
+        for (Employees employee : employees) {
+            EntityModel<Employees> employeeEntityModel = EntityModel.of(employee);
             WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
-                    .retrieveEmployee(employee.getId()));
+                    .retrieveEmployee(employee.getEmployee_id()));
             employeeEntityModel.add(linkBuilder.withSelfRel());
             entityModels.add(employeeEntityModel);
         }
         return entityModels;
     }
 
+    @GetMapping("/v1/employees")
+    public List<EntityModel<Employees>> retrieveAllEmployee() {
+        List<Employees> employees = this.employeeService.retrieveAllEmployee();
+        return mapEmployeesIntoEntityModels(employees);
+    }
+
+    @GetMapping("/v2/employees")
+    public List<EntityModel<Employees>> retrieveEmployees(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "5") int size) {
+        List<Employees> employees = this.employeeService.retrieveEmployees(page, size);
+        return mapEmployeesIntoEntityModels(employees);
+    }
+
     @GetMapping("/v1/employees/{id}")
-    public EntityModel<Optional<Employee>> retrieveEmployee(@PathVariable long id) {
-        Optional<Employee> employee = this.employeeService.retrieveEmployee(id);
-        EntityModel<Optional<Employee>> employeeEntityModel = EntityModel.of(employee);
+    public EntityModel<Optional<Employees>> retrieveEmployee(@PathVariable long id) {
+        Optional<Employees> employee = this.employeeService.retrieveEmployee(id);
+        EntityModel<Optional<Employees>> employeeEntityModel = EntityModel.of(employee);
         WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
                 .retrieveAllEmployee());
         employeeEntityModel.add(linkBuilder.withRel("all-employee"));
@@ -49,7 +60,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/v1/create-employee")
-    public ResponseEntity<Void> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<Void> createEmployee(@RequestBody Employees employee) {
         return this.employeeService.createEmployee(employee);
     }
 
@@ -59,7 +70,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/v1/employees/{id}")
-    public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employee employee) {
+    public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employees employee) {
         return this.employeeService.updateEmployeeById(id, employee);
     }
 
