@@ -2,7 +2,7 @@ package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
-import com.wonderpets.motorph.payrollm3.model.Employee;
+import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,9 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class EmployeeControllerTest {
+public class EmployeesControllerTest {
 
-    private final Employee employee = new Employee(
+    private final Employees employee = new Employees(
             "Doe",
             "John",
             "password",
@@ -88,7 +88,7 @@ public class EmployeeControllerTest {
         }
     }
 
-    private Optional<Employee> getTestEmployee() {
+    private Optional<Employees> getTestEmployee() {
         return employeeRepository.findByUsername("johndoe");
     }
 
@@ -98,7 +98,7 @@ public class EmployeeControllerTest {
         );
     }
 
-    private ResultActions mockPostOption(String urlTemplate, Employee employee) throws Exception {
+    private ResultActions mockPostOption(String urlTemplate, Employees employee) throws Exception {
         String requestBody = new ObjectMapper().writeValueAsString(employee);
 
         return mockMvc.perform(MockMvcRequestBuilders.post(urlTemplate)
@@ -108,7 +108,7 @@ public class EmployeeControllerTest {
         );
     }
 
-    private ResultActions mockPutOption(String urlTemplate, Employee employee) throws Exception {
+    private ResultActions mockPutOption(String urlTemplate, Employees employee) throws Exception {
         String requestBody = new ObjectMapper().writeValueAsString(employee);
 
         return mockMvc.perform(MockMvcRequestBuilders.put(urlTemplate)
@@ -159,11 +159,17 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
-        Optional<Employee> employeeOptional = this.employeeRepository.findByUsername("johndoe");
-        employeeOptional.ifPresent(value -> this.employeeRepository.deleteById(value.getEmployee_id()));
-        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
-        clearUserTable();
+    void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() {
+        Optional<Employees> employeeOptional = this.employeeRepository.findByUsername("johndoe");
+        employeeOptional.ifPresent(value -> {
+            this.employeeRepository.deleteById(value.getEmployee_id());
+            try {
+                mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
+                clearUserTable();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Test
