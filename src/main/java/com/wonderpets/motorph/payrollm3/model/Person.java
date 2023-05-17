@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 @MappedSuperclass
 @JsonIgnoreProperties(allowSetters = true, value = {"password"})
@@ -13,6 +15,7 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Generated(GenerationTime.INSERT)
     private long employee_id;
     private String role;
     private String username;
