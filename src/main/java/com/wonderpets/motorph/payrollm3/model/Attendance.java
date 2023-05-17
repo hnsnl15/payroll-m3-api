@@ -1,6 +1,9 @@
 package com.wonderpets.motorph.payrollm3.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -8,10 +11,13 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Attendance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Generated(GenerationTime.INSERT)
+    @JsonIgnoreProperties(allowGetters = true, value = {"id"})
     private long id;
     private String name;
     @Column(name = "date_of_attendance")
@@ -23,25 +29,19 @@ public class Attendance {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
-    private Employee employee;
+    private Employees employee;
 
+    public Attendance() {
+    }
 
-    public Attendance(String name, String date, String timeIn, String timeOut, boolean isLate, boolean isAbsent) {
-        this.name = name;
-        this.date = formatStringDate(date);
+    public Attendance(String date, String timeIn, String timeOut, boolean isLate, boolean isAbsent, Employees employee) {
+        this.name = employee.getFirstName().strip() + " " + employee.getLastName().strip();
+        this.date = date;
         this.timeIn = timeIn;
         this.timeOut = timeOut;
         this.isLate = isLate;
         this.isAbsent = isAbsent;
-    }
-
-    public Attendance(String name, String date, String timeIn, String timeOut) {
-        this.name = name;
-        this.date = formatStringDate(date);
-        this.timeIn = timeIn;
-        this.timeOut = timeOut;
-        this.isLate = false;
-        this.isAbsent = false;
+        this.employee = employee;
     }
 
     private String formatStringDate(String dateString) {
@@ -60,10 +60,10 @@ public class Attendance {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
-
+    
     public String getName() {
         return name;
     }
@@ -110,5 +110,13 @@ public class Attendance {
 
     public void setLate(boolean late) {
         isLate = late;
+    }
+
+    public Employees getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
     }
 }
