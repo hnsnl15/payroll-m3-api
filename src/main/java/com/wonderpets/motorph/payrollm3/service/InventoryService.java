@@ -1,6 +1,7 @@
 package com.wonderpets.motorph.payrollm3.service;
 
 import com.wonderpets.motorph.payrollm3.exception.StockEngineNumberAlreadyUsed;
+import com.wonderpets.motorph.payrollm3.exception.StockNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.InventoryJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Inventory;
 import jakarta.validation.Valid;
@@ -12,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -39,7 +39,7 @@ public class InventoryService {
 
     public List<Inventory> retrieveAllStock() {
         List<Inventory> inventoryList = this.inventoryJpaRepository.findAll();
-        if (inventoryList.isEmpty()) throw new NoSuchElementException("List is not available");
+        if (inventoryList.isEmpty()) throw new StockNotFoundException("List is not available");
         return inventoryList;
     }
 

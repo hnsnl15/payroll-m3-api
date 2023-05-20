@@ -106,6 +106,8 @@ public class InventoryControllerTest {
     @Test
     public void testRetrieveAllInventory() throws Exception {
         mockGetOption("/api/v1/inventory").andExpect(status().isOk());
+        this.inventoryJpaRepository.deleteAll();
+        mockGetOption("/api/v1/inventory").andExpect(status().isNotFound());
     }
 
     @Test
