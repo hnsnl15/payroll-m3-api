@@ -91,7 +91,7 @@ public class EmployeeService {
         Employees createdEmployee = employeeJpaRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdEmployee.getEmployee_id())
+                .buildAndExpand(createdEmployee.getEmployeeId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }

@@ -28,7 +28,7 @@ public class Attendance {
     private boolean isAbsent;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
+    @JoinColumn(name = "employee_id", referencedColumnName = "employeeId")
     private Employees employee;
 
     public Attendance() {
@@ -63,7 +63,7 @@ public class Attendance {
     public void setId(long id) {
         this.id = id;
     }
-    
+
     public String getName() {
         return name;
     }

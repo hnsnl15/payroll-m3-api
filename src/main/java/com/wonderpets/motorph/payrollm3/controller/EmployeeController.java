@@ -29,7 +29,7 @@ public class EmployeeController {
         for (Employees employee : employees) {
             EntityModel<Employees> employeeEntityModel = EntityModel.of(employee);
             WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
-                    .retrieveEmployee(employee.getEmployee_id()));
+                    .retrieveEmployee(employee.getEmployeeId()));
             employeeEntityModel.add(linkBuilder.withSelfRel());
             entityModels.add(employeeEntityModel);
         }

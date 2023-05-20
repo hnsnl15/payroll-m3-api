@@ -131,7 +131,7 @@ public class EmployeesControllerTest {
 
     @AfterEach
     public void clearDataPerTest() {
-        if (getTestEmployee().isPresent()) employeeJpaRepository.deleteById(getTestEmployee().get().getEmployee_id());
+        if (getTestEmployee().isPresent()) employeeJpaRepository.deleteById(getTestEmployee().get().getEmployeeId());
     }
 
     @Test
@@ -147,13 +147,13 @@ public class EmployeesControllerTest {
 
     @Test
     public void testRetrieveEmployeeById() throws Exception {
-        mockGetOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockGetOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId()).andExpect(status().isOk());
         mockGetOption("/api/v1/employees/12345").andExpect(status().isNotFound());
     }
 
     @Test
     public void testDeleteEmployeeById() throws Exception {
-        mockDeleteOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockDeleteOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId()).andExpect(status().isOk());
         mockDeleteOption("/api/v1/employees/123456").andExpect(status().isNotFound());
         mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
@@ -178,7 +178,7 @@ public class EmployeesControllerTest {
 
     @Test
     void updateEmployee_WhenIdIsAvailable() throws Exception {
-        mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id(), employee).andExpect(status().isOk());
+        mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId(), employee).andExpect(status().isOk());
     }
 
     @Test
