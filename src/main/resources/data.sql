@@ -39,6 +39,16 @@ CREATE TABLE IF NOT EXISTS attendance (
 );
 
 
+CREATE TABLE IF NOT EXISTS inventory (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    date_entered DATE,
+    stock_label VARCHAR(150),
+    brand VARCHAR(100),
+    engine_number VARCHAR(150),
+    status VARCHAR(60)
+)
+
+
 -- EMPLOYEES INSERTION
 INSERT INTO employees (employee_id, role, username, password, last_name, first_name, birthday, address, phone_number, sss_no, philhealth_no, tin_no, pagibig_no, status, position, immediate_supervisor, basic_salary, rice_subsidy, phone_allowance, clothing_allowance, gross_semi_monthly_rate, hourly_rate)
 VALUES (10001, 'USER', 'josecrisostomo', '123', 'Crisostomo', 'Jose', '1988-02-14', '17/85 Stracke Via Suite 042, Poblacion, Las Piñas 4783 Dinagat Islands', '918-621-603', '49-1632020-8', '382189453145', '317-674-022-000', '441093369646', 'Regular', 'HR Manager', 'N/A', 62670.0, 1500.0, 1000.0, 1000.0, 31335.0, 373.04);
@@ -26219,3 +26229,725 @@ INSERT INTO attendance (name, date_of_attendance, time_in, time_out, is_late, is
 VALUES ('Delia Aguilar', '2022-12-30', '0:00', '0:00', false, false, (SELECT employee_id FROM employees WHERE username = 'deliaaguilar'));
 INSERT INTO attendance (name, date_of_attendance, time_in, time_out, is_late, is_absent, employee_id)
 VALUES ('Delia Aguilar', '2022-12-30', '0:00', '0:00', false, false, (SELECT employee_id FROM employees WHERE username = 'deliaaguilar'));
+
+
+-- INVENTORY INSERTION
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '142QVTSIUR', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '142QVTSIUR', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '142QVTSIUR', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '142QVTSIUR', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '142QVTSIUR', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', 'PZCT1S00XE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', 'PZCT1S00XE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', 'PZCT1S00XE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', 'PZCT1S00XE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', 'PZCT1S00XE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '4VBTV8YNM7', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '4VBTV8YNM7', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '4VBTV8YNM7', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '4VBTV8YNM7', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '4VBTV8YNM7', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '95AN3AWVF4', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '95AN3AWVF4', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '95AN3AWVF4', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '95AN3AWVF4', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-01', 'Old', 'Honda', '95AN3AWVF4', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kawasaki', '483QHIM661', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kawasaki', '483QHIM661', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kawasaki', '483QHIM661', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kawasaki', '483QHIM661', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kawasaki', '483QHIM661', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', 'SPHA17SSEE', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', 'SPHA17SSEE', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', 'SPHA17SSEE', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', 'SPHA17SSEE', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', 'SPHA17SSEE', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', '0AV7SWGX93', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', '0AV7SWGX93', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', '0AV7SWGX93', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', '0AV7SWGX93', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-03', 'Old', 'Kymco', '0AV7SWGX93', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Kymco', 'QMUB6UYLKL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Kymco', 'QMUB6UYLKL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Kymco', 'QMUB6UYLKL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Kymco', 'QMUB6UYLKL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Kymco', 'QMUB6UYLKL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Honda', 'V96GMTFFEI', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Honda', 'V96GMTFFEI', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Honda', 'V96GMTFFEI', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Honda', 'V96GMTFFEI', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-04', 'Old', 'Honda', 'V96GMTFFEI', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', '4J8UA0FMVY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', '4J8UA0FMVY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', '4J8UA0FMVY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', '4J8UA0FMVY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', '4J8UA0FMVY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'A8BDL926FA', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'A8BDL926FA', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'A8BDL926FA', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'A8BDL926FA', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'A8BDL926FA', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'X8G5ZZ7A69', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'X8G5ZZ7A69', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'X8G5ZZ7A69', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'X8G5ZZ7A69', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-05', 'Old', 'Kawasaki', 'X8G5ZZ7A69', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', 'TY5SU0WPDX', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', 'TY5SU0WPDX', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', 'TY5SU0WPDX', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', 'TY5SU0WPDX', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', 'TY5SU0WPDX', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', '5Q0EZG7WKB', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', '5Q0EZG7WKB', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', '5Q0EZG7WKB', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', '5Q0EZG7WKB', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Honda', '5Q0EZG7WKB', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Suzuki', '9XUOUOJ2XZ', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Suzuki', '9XUOUOJ2XZ', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Suzuki', '9XUOUOJ2XZ', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Suzuki', '9XUOUOJ2XZ', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Suzuki', '9XUOUOJ2XZ', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', 'YUL4UTC4FU', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', 'YUL4UTC4FU', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', 'YUL4UTC4FU', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', 'YUL4UTC4FU', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', 'YUL4UTC4FU', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', '2ESQRHAXWG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', '2ESQRHAXWG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', '2ESQRHAXWG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', '2ESQRHAXWG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-06', 'Old', 'Kymco', '2ESQRHAXWG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'J8JA99VWZE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'J8JA99VWZE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'J8JA99VWZE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'J8JA99VWZE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'J8JA99VWZE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'NS530HOT9H', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'NS530HOT9H', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'NS530HOT9H', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'NS530HOT9H', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Kymco', 'NS530HOT9H', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Suzuki', 'URIA0XXM05', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Suzuki', 'URIA0XXM05', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Suzuki', 'URIA0XXM05', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Suzuki', 'URIA0XXM05', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Suzuki', 'URIA0XXM05', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Yamaha', 'IDN93SI4KW', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Yamaha', 'IDN93SI4KW', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Yamaha', 'IDN93SI4KW', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Yamaha', 'IDN93SI4KW', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Yamaha', 'IDN93SI4KW', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'PVAWKD51CE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'PVAWKD51CE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'PVAWKD51CE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'PVAWKD51CE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'PVAWKD51CE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'K4KHCQAU41', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'K4KHCQAU41', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'K4KHCQAU41', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'K4KHCQAU41', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-07', 'Old', 'Honda', 'K4KHCQAU41', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'Z4NY5JGZZT', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'Z4NY5JGZZT', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'Z4NY5JGZZT', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'Z4NY5JGZZT', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'Z4NY5JGZZT', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'IRQACSKUNZ', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'IRQACSKUNZ', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'IRQACSKUNZ', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'IRQACSKUNZ', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Honda', 'IRQACSKUNZ', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'TMZCTALNDL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'TMZCTALNDL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'TMZCTALNDL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'TMZCTALNDL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'TMZCTALNDL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'DVFUIA0YVB', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'DVFUIA0YVB', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'DVFUIA0YVB', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'DVFUIA0YVB', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Yamaha', 'DVFUIA0YVB', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Kymco', '4M793VVAHI', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Kymco', '4M793VVAHI', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Kymco', '4M793VVAHI', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Kymco', '4M793VVAHI', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Kymco', '4M793VVAHI', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Suzuki', '5N7IQVJ2BA', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Suzuki', '5N7IQVJ2BA', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Suzuki', '5N7IQVJ2BA', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Suzuki', '5N7IQVJ2BA', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-02-08', 'Old', 'Suzuki', '5N7IQVJ2BA', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Suzuki', 'NO8VW05PU9', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Suzuki', 'NO8VW05PU9', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Suzuki', 'NO8VW05PU9', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Suzuki', 'NO8VW05PU9', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Suzuki', 'NO8VW05PU9', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Yamaha', 'NWIP2MQEIN', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Yamaha', 'NWIP2MQEIN', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Yamaha', 'NWIP2MQEIN', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Yamaha', 'NWIP2MQEIN', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Yamaha', 'NWIP2MQEIN', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Kawasaki', '1HCWCVZSX8', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Kawasaki', '1HCWCVZSX8', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Kawasaki', '1HCWCVZSX8', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Kawasaki', '1HCWCVZSX8', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-01', 'New', 'Kawasaki', '1HCWCVZSX8', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'Z46VKPIJBY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'Z46VKPIJBY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'Z46VKPIJBY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'Z46VKPIJBY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'Z46VKPIJBY', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'LYQVEHJ6IU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'LYQVEHJ6IU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'LYQVEHJ6IU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'LYQVEHJ6IU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Kawasaki', 'LYQVEHJ6IU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Yamaha', 'BVGQQNMATL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Yamaha', 'BVGQQNMATL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Yamaha', 'BVGQQNMATL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Yamaha', 'BVGQQNMATL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-03', 'New', 'Yamaha', 'BVGQQNMATL', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Kymco', 'URWMSQZCBU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Kymco', 'URWMSQZCBU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Kymco', 'URWMSQZCBU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Kymco', 'URWMSQZCBU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Kymco', 'URWMSQZCBU', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Yamaha', '5NGI5UZ8T2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Yamaha', '5NGI5UZ8T2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Yamaha', '5NGI5UZ8T2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Yamaha', '5NGI5UZ8T2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-04', 'New', 'Yamaha', '5NGI5UZ8T2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'W2UYM0EIRS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'W2UYM0EIRS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'W2UYM0EIRS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'W2UYM0EIRS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'W2UYM0EIRS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'AITLTSJUK2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'AITLTSJUK2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'AITLTSJUK2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'AITLTSJUK2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Honda', 'AITLTSJUK2', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Yamaha', '45CNYV7IFF', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Yamaha', '45CNYV7IFF', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Yamaha', '45CNYV7IFF', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Yamaha', '45CNYV7IFF', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-05', 'New', 'Yamaha', '45CNYV7IFF', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'MXS36NKV96', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'MXS36NKV96', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'MXS36NKV96', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'MXS36NKV96', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'MXS36NKV96', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'PWM3MJWPYE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'PWM3MJWPYE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'PWM3MJWPYE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'PWM3MJWPYE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', 'PWM3MJWPYE', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', '5I80N9HB7W', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', '5I80N9HB7W', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', '5I80N9HB7W', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', '5I80N9HB7W', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Kymco', '5I80N9HB7W', 'Sold');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Yamaha', 'D01JMJL9PG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Yamaha', 'D01JMJL9PG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Yamaha', 'D01JMJL9PG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Yamaha', 'D01JMJL9PG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Yamaha', 'D01JMJL9PG', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Suzuki', '1R88BOJW8W', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Suzuki', '1R88BOJW8W', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Suzuki', '1R88BOJW8W', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Suzuki', '1R88BOJW8W', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-06', 'New', 'Suzuki', '1R88BOJW8W', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Suzuki', 'LAMH9Y1YD6', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Suzuki', 'LAMH9Y1YD6', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Suzuki', 'LAMH9Y1YD6', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Suzuki', 'LAMH9Y1YD6', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Suzuki', 'LAMH9Y1YD6', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Yamaha', '02G7NJCRGS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Yamaha', '02G7NJCRGS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Yamaha', '02G7NJCRGS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Yamaha', '02G7NJCRGS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Yamaha', '02G7NJCRGS', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Kawasaki', '392XSUBMUW', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Kawasaki', '392XSUBMUW', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Kawasaki', '392XSUBMUW', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Kawasaki', '392XSUBMUW', 'On-hand');
+
+INSERT INTO inventory (date_entered, stock_label, brand, engine_number, status)
+VALUES ('2023-03-07', 'New', 'Kawasaki', '392XSUBMUW', 'On-hand');
