@@ -28,7 +28,7 @@ public class InventoryController {
     private List<EntityModel<Inventory>> wrapListOfInventoryIntoEntityModels(List<Inventory> inventoryList) {
         List<EntityModel<Inventory>> stockEntityModels = new ArrayList<>();
         for (Inventory stock : inventoryList) {
-            EntityModel stockEntityModel = EntityModel.of(stock);
+            EntityModel<Inventory> stockEntityModel = EntityModel.of(stock);
             WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
                     .retrieveStockByEngineNumber(stock.getEngineNumber()));
             stockEntityModel.add(linkBuilder.withSelfRel());
