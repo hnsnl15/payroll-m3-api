@@ -1,7 +1,7 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
+import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.junit.jupiter.api.AfterEach;
@@ -62,7 +62,7 @@ public class EmployeesControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeJpaRepository employeeJpaRepository;
 
     @Autowired
     private JwtAuthController jwtAuthController;
@@ -89,7 +89,7 @@ public class EmployeesControllerTest {
     }
 
     private Optional<Employees> getTestEmployee() {
-        return employeeRepository.findByUsername("johndoe");
+        return employeeJpaRepository.findByUsername("johndoe");
     }
 
     private ResultActions mockGetOption(String urlTemplate) throws Exception {
@@ -126,12 +126,12 @@ public class EmployeesControllerTest {
 
     @BeforeEach()
     public void createData() {
-        this.employeeRepository.save(employee);
+        this.employeeJpaRepository.save(employee);
     }
 
     @AfterEach
     public void clearDataPerTest() {
-        if (getTestEmployee().isPresent()) employeeRepository.deleteById(getTestEmployee().get().getEmployee_id());
+        if (getTestEmployee().isPresent()) employeeJpaRepository.deleteById(getTestEmployee().get().getEmployee_id());
     }
 
     @Test
@@ -160,9 +160,9 @@ public class EmployeesControllerTest {
 
     @Test
     void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() {
-        Optional<Employees> employeeOptional = this.employeeRepository.findByUsername("johndoe");
+        Optional<Employees> employeeOptional = this.employeeJpaRepository.findByUsername("johndoe");
         employeeOptional.ifPresent(value -> {
-            this.employeeRepository.deleteById(value.getEmployee_id());
+            this.employeeJpaRepository.deleteById(value.getEmployee_id());
             try {
                 mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
                 clearUserTable();

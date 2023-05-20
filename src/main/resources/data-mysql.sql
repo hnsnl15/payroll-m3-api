@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS inventory (
     brand VARCHAR(100),
     engine_number VARCHAR(150),
     status VARCHAR(60)
-)
+);
 
 CREATE TABLE IF NOT EXISTS users (
    username VARCHAR(100) NOT NULL,

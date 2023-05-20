@@ -2,7 +2,7 @@ package com.wonderpets.motorph.payrollm3.service;
 
 import com.wonderpets.motorph.payrollm3.exception.UserAlreadyCreatedException;
 import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
-import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
+import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.Role;
 import jakarta.validation.Valid;
@@ -28,12 +28,12 @@ import java.util.Optional;
 @Transactional
 public class EmployeeService {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeJpaRepository employeeJpaRepository;
     private final DataSource dataSource;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public EmployeeService(EmployeeRepository employeeRepository, DataSource dataSource, BCryptPasswordEncoder passwordEncoder) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeService(EmployeeJpaRepository employeeJpaRepository, DataSource dataSource, BCryptPasswordEncoder passwordEncoder) {
+        this.employeeJpaRepository = employeeJpaRepository;
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
     }
@@ -51,7 +51,7 @@ public class EmployeeService {
     }
 
     public List<Employees> retrieveAllEmployee() {
-        List<Employees> employees = this.employeeRepository.findAll();
+        List<Employees> employees = this.employeeJpaRepository.findAll();
         for (Employees employee : employees) {
             userDetailsService(employee.getUsername(), employee.getPassword());
         }
@@ -60,26 +60,26 @@ public class EmployeeService {
 
     public List<Employees> retrieveEmployees(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Employees> employeePage = this.employeeRepository.findAll(pageable);
+        Page<Employees> employeePage = this.employeeJpaRepository.findAll(pageable);
         return employeePage.getContent();
     }
 
     public Optional<Employees> retrieveEmployee(long id) {
-        Optional<Employees> employee = this.employeeRepository.findById(id);
+        Optional<Employees> employee = this.employeeJpaRepository.findById(id);
         if (employee.isEmpty()) throw new UserNotFoundException("Employee is not in the record.");
         return employee;
     }
 
     public ResponseEntity<Void> deleteEmployeeById(long id) {
-        if (this.employeeRepository.findById(id).isEmpty()) {
+        if (this.employeeJpaRepository.findById(id).isEmpty()) {
             throw new UserNotFoundException("Unable to delete employee, employee not found.");
         }
-        this.employeeRepository.deleteById(id);
+        this.employeeJpaRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
     public ResponseEntity<Void> createEmployee(@Valid @RequestBody Employees employee) {
-        if (employeeRepository.findByUsername(employee.getUsername()).isPresent()) {
+        if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent()) {
             throw new UserAlreadyCreatedException("Username is not available.");
         }
         if (employee.getPassword() == null) {
@@ -88,7 +88,7 @@ public class EmployeeService {
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(encodedPassword);
         userDetailsService(employee.getUsername(), encodedPassword);
-        Employees createdEmployee = employeeRepository.save(employee);
+        Employees createdEmployee = employeeJpaRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(createdEmployee.getEmployee_id())
@@ -97,10 +97,10 @@ public class EmployeeService {
     }
 
     public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employees employee) {
-        if (employeeRepository.findById(id).isEmpty()) {
+        if (employeeJpaRepository.findById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        employeeRepository.save(employee);
+        employeeJpaRepository.save(employee);
         return ResponseEntity.ok().build();
     }
 

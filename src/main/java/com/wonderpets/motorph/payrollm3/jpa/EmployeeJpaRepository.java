@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employees, Long> {
+public interface EmployeeJpaRepository extends JpaRepository<Employees, Long> {
     Optional<Employees> findByUsername(String username);
 
     void deleteByUsername(String username);

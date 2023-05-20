@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS inventory (
     brand VARCHAR(100),
     engine_number VARCHAR(150),
     status VARCHAR(60)
-)
+);
 
 
 -- EMPLOYEES INSERTION
