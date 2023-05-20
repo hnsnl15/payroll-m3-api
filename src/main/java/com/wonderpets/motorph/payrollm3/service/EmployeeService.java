@@ -52,6 +52,7 @@ public class EmployeeService {
 
     public List<Employees> retrieveAllEmployee() {
         List<Employees> employees = this.employeeJpaRepository.findAll();
+        if (employees.isEmpty()) throw new UserNotFoundException("Employees not available.");
         for (Employees employee : employees) {
             userDetailsService(employee.getUsername(), employee.getPassword());
         }
@@ -71,20 +72,19 @@ public class EmployeeService {
     }
 
     public ResponseEntity<Void> deleteEmployeeById(long id) {
-        if (this.employeeJpaRepository.findById(id).isEmpty()) {
+        if (this.employeeJpaRepository.findById(id).isEmpty())
             throw new UserNotFoundException("Unable to delete employee, employee not found.");
-        }
         this.employeeJpaRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
     public ResponseEntity<Void> createEmployee(@Valid @RequestBody Employees employee) {
-        if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent()) {
+        if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent())
             throw new UserAlreadyCreatedException("Username is not available.");
-        }
-        if (employee.getPassword() == null) {
+
+        if (employee.getPassword() == null)
             throw new IllegalArgumentException("Password cannot be null.");
-        }
+
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(encodedPassword);
         userDetailsService(employee.getUsername(), encodedPassword);
@@ -97,9 +97,8 @@ public class EmployeeService {
     }
 
     public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employees employee) {
-        if (employeeJpaRepository.findById(id).isEmpty()) {
+        if (employeeJpaRepository.findById(id).isEmpty())
             throw new UserNotFoundException("Employee is not on the record");
-        }
         employeeJpaRepository.save(employee);
         return ResponseEntity.ok().build();
     }
