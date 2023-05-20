@@ -5,14 +5,20 @@ import com.wonderpets.motorph.payrollm3.exception.StockNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.InventoryJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Inventory;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -43,10 +49,23 @@ public class InventoryService {
         return inventoryList;
     }
 
-    public void retrieveStockByEngineNumber() {
+    public Optional<Inventory> retrieveStockByEngineNumber(@PathVariable String engineNumber) {
+        Optional<Inventory> stock = this.inventoryJpaRepository.findByEngineNumber(engineNumber);
+        if (stock.isEmpty()) throw new StockNotFoundException("Stock is not in the record.");
+        return stock;
     }
 
-    public void retrieveStocksByPagination() {
+    public List<Inventory> retrieveStocksByPagination(int page, int size, String engineNumber) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Inventory> inventoryPage = retrieveStocksByEngineNumber(engineNumber, pageable);
+        if (inventoryPage.isEmpty()) return Collections.emptyList();
+        return inventoryPage.getContent();
+    }
+
+    private Page<Inventory> retrieveStocksByEngineNumber(String engineNumber, Pageable pageable) {
+        return this.inventoryJpaRepository.findByEngineNumber(engineNumber)
+                .map(stock -> inventoryJpaRepository.findAllByEngineNumber(stock.getEngineNumber(), pageable))
+                .orElse(Page.empty());
     }
 
     public void updateStock() {

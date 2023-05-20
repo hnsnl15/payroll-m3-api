@@ -112,12 +112,12 @@ public class InventoryControllerTest {
 
     @Test
     public void testRetrieveInventoryByPagination() throws Exception {
-        mockGetOption("/api/v2/inventory").andExpect(status().isOk());
+        mockGetOption("/api/v2/inventory?engineNumber=FGRTERTY768").andExpect(status().isOk());
     }
 
     @Test
-    public void testRetrieveInventoryById() throws Exception {
-        mockGetOption("/api/v1/inventory/" + getTestStock().get().getId()).andExpect(status().isOk());
+    public void testRetrieveInventoryByEngineNumber() throws Exception {
+        mockGetOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber()).andExpect(status().isOk());
         mockGetOption("/api/v1/inventory/12345").andExpect(status().isNotFound());
     }
 
