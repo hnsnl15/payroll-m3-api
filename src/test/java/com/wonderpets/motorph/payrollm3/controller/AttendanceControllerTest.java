@@ -2,7 +2,7 @@ package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonderpets.motorph.payrollm3.jpa.AttendanceJpaRepository;
-import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
+import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Attendance;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
@@ -81,7 +81,7 @@ public class AttendanceControllerTest {
     @Autowired
     private DataSource dataSource;
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeJpaRepository employeeJpaRepository;
     @Autowired
     private AttendanceJpaRepository attendanceJpaRepository;
 
@@ -160,7 +160,7 @@ public class AttendanceControllerTest {
 
     @BeforeEach()
     public void createData() {
-        Employees createdEmployee = this.employeeRepository.save(employee);
+        Employees createdEmployee = this.employeeJpaRepository.save(employee);
         userDetailsService(createdEmployee.getUsername(), createdEmployee.getPassword());
         this.attendanceJpaRepository.save(attendance);
     }

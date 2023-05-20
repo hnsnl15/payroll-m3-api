@@ -1,7 +1,7 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
+import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.junit.jupiter.api.AfterEach;
@@ -60,12 +60,12 @@ public class EmployeesControllerTest {
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
+    private EmployeeJpaRepository employeeJpaRepository;
     @Autowired
     private JwtAuthController jwtAuthController;
+    @Autowired
+    private MockMvc mockMvc;
+
 
     private String generateBasicAuthHeader() {
         String credentials = adminUsername + ":" + adminPassword;
@@ -89,7 +89,7 @@ public class EmployeesControllerTest {
     }
 
     private Optional<Employees> getTestEmployee() {
-        return employeeRepository.findByUsername("johndoe");
+        return employeeJpaRepository.findByUsername("johndoe");
     }
 
     private ResultActions mockGetOption(String urlTemplate) throws Exception {
@@ -126,12 +126,12 @@ public class EmployeesControllerTest {
 
     @BeforeEach()
     public void createData() {
-        this.employeeRepository.save(employee);
+        this.employeeJpaRepository.save(employee);
     }
 
     @AfterEach
     public void clearDataPerTest() {
-        if (getTestEmployee().isPresent()) employeeRepository.deleteById(getTestEmployee().get().getEmployee_id());
+        if (getTestEmployee().isPresent()) employeeJpaRepository.deleteById(getTestEmployee().get().getEmployeeId());
     }
 
     @Test
@@ -147,29 +147,22 @@ public class EmployeesControllerTest {
 
     @Test
     public void testRetrieveEmployeeById() throws Exception {
-        mockGetOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockGetOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId()).andExpect(status().isOk());
         mockGetOption("/api/v1/employees/12345").andExpect(status().isNotFound());
     }
 
     @Test
     public void testDeleteEmployeeById() throws Exception {
-        mockDeleteOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id()).andExpect(status().isOk());
+        mockDeleteOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId()).andExpect(status().isOk());
         mockDeleteOption("/api/v1/employees/123456").andExpect(status().isNotFound());
         mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
 
     @Test
-    void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() {
-        Optional<Employees> employeeOptional = this.employeeRepository.findByUsername("johndoe");
-        employeeOptional.ifPresent(value -> {
-            this.employeeRepository.deleteById(value.getEmployee_id());
-            try {
-                mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
-                clearUserTable();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
+        clearDataPerTest();
+        mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
+        clearUserTable();
     }
 
     @Test
@@ -185,15 +178,14 @@ public class EmployeesControllerTest {
 
     @Test
     void updateEmployee_WhenIdIsAvailable() throws Exception {
-        mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id(), employee).andExpect(status().isOk());
+        mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId(), employee).andExpect(status().isOk());
     }
 
     @Test
     void updateEmployee_WhenIdIsNotAvailable_ShouldReturnBadRequest() throws Exception {
         clearDataPerTest();
-        if (getTestEmployee().isPresent())
-            mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployee_id(), employee)
-                    .andExpect(status().isBadRequest());
+        mockPutOption("/api/v1/employees/" + 1, employee)
+                .andExpect(status().isNotFound());
     }
 
 

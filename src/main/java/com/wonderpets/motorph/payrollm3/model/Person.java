@@ -16,7 +16,7 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Generated(GenerationTime.INSERT)
-    private long employee_id;
+    private long employeeId;
     private String role;
     private String username;
 
@@ -43,12 +43,12 @@ public class Person {
     }
 
 
-    public long getEmployee_id() {
-        return employee_id;
+    public long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployee_id(long employee_id) {
-        this.employee_id = employee_id;
+    public void setEmployeeId(long employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getUserRole() {

@@ -1,7 +1,7 @@
 package com.wonderpets.motorph.payrollm3.service;
 
 import com.wonderpets.motorph.payrollm3.jpa.AttendanceJpaRepository;
-import com.wonderpets.motorph.payrollm3.jpa.EmployeeRepository;
+import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Attendance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +23,11 @@ import java.util.Optional;
 public class AttendanceService {
 
     private final AttendanceJpaRepository attendanceJpaRepository;
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeJpaRepository employeeJpaRepository;
 
-    public AttendanceService(AttendanceJpaRepository attendanceJpaRepository, EmployeeRepository employeeRepository) {
+    public AttendanceService(AttendanceJpaRepository attendanceJpaRepository, EmployeeJpaRepository employeeJpaRepository) {
         this.attendanceJpaRepository = attendanceJpaRepository;
-        this.employeeRepository = employeeRepository;
+        this.employeeJpaRepository = employeeJpaRepository;
     }
 
     public List<Attendance> retrieveAllAttendance() {
@@ -59,7 +59,7 @@ public class AttendanceService {
     }
 
     public Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
-        return employeeRepository.findById(id)
+        return employeeJpaRepository.findById(id)
                 .map(employee -> attendanceJpaRepository.findAllByEmployee(employee, pageable))
                 .orElse(Page.empty());
     }

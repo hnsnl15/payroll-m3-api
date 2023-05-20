@@ -24,29 +24,31 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    private List<EntityModel<Employees>> mapEmployeesIntoEntityModels(List<Employees> employees) {
+    private List<EntityModel<Employees>> wrapListOfEmployeesIntoEntityModels(List<Employees> employees) {
         List<EntityModel<Employees>> entityModels = new ArrayList<>();
         for (Employees employee : employees) {
             EntityModel<Employees> employeeEntityModel = EntityModel.of(employee);
             WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
-                    .retrieveEmployee(employee.getEmployee_id()));
+                    .retrieveEmployee(employee.getEmployeeId()));
             employeeEntityModel.add(linkBuilder.withSelfRel());
             entityModels.add(employeeEntityModel);
         }
         return entityModels;
     }
 
+    private List<EntityModel<Employees>> mapEmployeesIntoEntityModels(List<Employees> employees) {
+        return wrapListOfEmployeesIntoEntityModels(employees);
+    }
+
     @GetMapping("/v1/employees")
     public List<EntityModel<Employees>> retrieveAllEmployee() {
-        List<Employees> employees = this.employeeService.retrieveAllEmployee();
-        return mapEmployeesIntoEntityModels(employees);
+        return mapEmployeesIntoEntityModels(this.employeeService.retrieveAllEmployee());
     }
 
     @GetMapping("/v2/employees")
     public List<EntityModel<Employees>> retrieveEmployees(@RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "5") int size) {
-        List<Employees> employees = this.employeeService.retrieveEmployees(page, size);
-        return mapEmployeesIntoEntityModels(employees);
+        return mapEmployeesIntoEntityModels(this.employeeService.retrieveEmployees(page, size));
     }
 
     @GetMapping("/v1/employees/{id}")
