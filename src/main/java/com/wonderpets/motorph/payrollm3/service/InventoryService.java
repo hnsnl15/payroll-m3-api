@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -35,7 +37,10 @@ public class InventoryService {
         return ResponseEntity.created(location).build();
     }
 
-    public void retrieveAllStock() {
+    public List<Inventory> retrieveAllStock() {
+        List<Inventory> inventoryList = this.inventoryJpaRepository.findAll();
+        if (inventoryList.isEmpty()) throw new NoSuchElementException("List is not available");
+        return inventoryList;
     }
 
     public void retrieveStockByEngineNumber() {
