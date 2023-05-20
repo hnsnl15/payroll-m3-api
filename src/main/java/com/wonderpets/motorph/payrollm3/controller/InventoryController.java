@@ -64,12 +64,14 @@ public class InventoryController {
         return this.inventoryService.createStock(inventory);
     }
 
-    @PutMapping("/v1/inventory")
-    public void updateStock() {
+    @PutMapping("/v1/inventory/{engineNumber}")
+    public ResponseEntity<Void> updateStock(@PathVariable String engineNumber, @RequestBody Inventory stock) {
+        return this.inventoryService.updateStock(engineNumber, stock);
     }
 
-    @DeleteMapping("/v1/inventory")
-    public void deleteStock() {
+    @DeleteMapping("/v1/inventory/{engineNumber}")
+    public ResponseEntity<Void> deleteStock(@PathVariable String engineNumber) {
+        return this.inventoryService.deleteStock(engineNumber);
     }
 
 }

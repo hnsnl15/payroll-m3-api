@@ -68,10 +68,18 @@ public class InventoryService {
                 .orElse(Page.empty());
     }
 
-    public void updateStock() {
+    public ResponseEntity<Void> updateStock(@PathVariable String engineNumber, @RequestBody Inventory stock) {
+        if (this.inventoryJpaRepository.findByEngineNumber(engineNumber).isEmpty())
+            throw new StockNotFoundException("Stock is not in the record.");
+        this.inventoryJpaRepository.save(stock);
+        return ResponseEntity.ok().build();
     }
 
-    public void deleteStock() {
+    public ResponseEntity<Void> deleteStock(@PathVariable String engineNumber) {
+        if (this.inventoryJpaRepository.findByEngineNumber(engineNumber).isEmpty())
+            throw new StockNotFoundException("Unable to delete, no stock found!");
+        this.inventoryJpaRepository.deleteByEngineNumber(engineNumber);
+        return ResponseEntity.ok().build();
     }
 
 }

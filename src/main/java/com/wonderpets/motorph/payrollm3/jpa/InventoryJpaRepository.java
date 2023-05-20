@@ -11,4 +11,6 @@ public interface InventoryJpaRepository extends JpaRepository<Inventory, Long> {
     Optional<Inventory> findByEngineNumber(String engineNumber);
 
     Page<Inventory> findAllByEngineNumber(String engineNumber, Pageable pageable);
+
+    void deleteByEngineNumber(String engineNumber);
 }

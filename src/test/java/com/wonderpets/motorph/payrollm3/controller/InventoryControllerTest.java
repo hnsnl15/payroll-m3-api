@@ -122,13 +122,6 @@ public class InventoryControllerTest {
     }
 
     @Test
-    public void testDeleteInventoryById() throws Exception {
-        mockDeleteOption("/api/v1/inventory/" + getTestStock().get().getId()).andExpect(status().isOk());
-        mockDeleteOption("/api/v1/inventory/123456").andExpect(status().isNotFound());
-        mockDeleteOption("/api/v1/inventory/gfsdgdfgdf").andExpect(status().isBadRequest());
-    }
-
-    @Test
     void createStock() {
         Optional<Inventory> inventoryOptional = getTestStock();
         inventoryOptional.ifPresent(value -> {
@@ -148,16 +141,15 @@ public class InventoryControllerTest {
     }
 
     @Test
-    void updateEmployee_WhenIdIsAvailable() throws Exception {
-        mockPutOption("/api/v1/inventory/" + getTestStock().get().getId(), stock1).andExpect(status().isOk());
+    void updateStock() throws Exception {
+        mockPutOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber(), stock1).andExpect(status().isOk());
+        mockPutOption("/api/v1/inventory/111111", stock1).andExpect(status().isNotFound());
     }
 
     @Test
-    void updateEmployee_WhenIdIsNotAvailable_ShouldReturnBadRequest() throws Exception {
-        clearDataPerTest();
-        if (getTestStock().isEmpty())
-            mockPutOption("/api/v1/inventory/" + getTestStock().get().getId(), stock1)
-                    .andExpect(status().isBadRequest());
+    void deleteStock() throws Exception {
+        mockDeleteOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber())
+                .andExpect(status().isOk());
     }
 
 
