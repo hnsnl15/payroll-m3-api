@@ -98,7 +98,7 @@ public class EmployeeService {
 
     public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employees employee) {
         if (employeeJpaRepository.findById(id).isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            throw new UserNotFoundException("Employee is not on the record");
         }
         employeeJpaRepository.save(employee);
         return ResponseEntity.ok().build();
