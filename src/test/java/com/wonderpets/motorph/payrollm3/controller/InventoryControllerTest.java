@@ -132,7 +132,7 @@ public class InventoryControllerTest {
         inventoryOptional.ifPresent(value -> {
             this.inventoryJpaRepository.deleteById(value.getId());
             try {
-                mockPostOption("/api/v1/create-stock", stock1).andExpect(status().isCreated());
+                mockPostOption("/api/v1/inventory/create-stock", stock1).andExpect(status().isCreated());
                 clearDataPerTest();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -142,7 +142,7 @@ public class InventoryControllerTest {
 
     @Test
     void createStockWhenEngineNumberIsAlreadyUsed() throws Exception {
-        mockPostOption("/api/v1/create-stock", stock1).andExpect(status().isBadRequest());
+        mockPostOption("/api/v1/inventory/create-stock", stock1).andExpect(status().isBadRequest());
     }
 
     @Test

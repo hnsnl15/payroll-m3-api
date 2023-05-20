@@ -45,6 +45,13 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(StockEngineNumberAlreadyUsed.class)
+    public final ResponseEntity<Object> stockEngineNumberAlreadyUsed(Exception exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), exception.getMessage(),
+                webRequest.getDescription(false), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(InvalidUsernameOrPassword.class)
     public final ResponseEntity<Object> invalidUsernameOrPasswordException(Exception exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), exception.getMessage(),
