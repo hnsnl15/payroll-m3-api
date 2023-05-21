@@ -58,7 +58,7 @@ public class EmployeesControllerTest {
     );
 
     private final Attendance attendance = new Attendance(
-            "2023-05-17", "09:00", "17:00", false, false, employee);
+            "2023-05-17", "09:00", "17:00", false, false, false, employee);
 
     @Value("${jwt.admin.username}")
     private String adminUsername;

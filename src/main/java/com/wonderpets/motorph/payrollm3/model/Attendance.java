@@ -26,6 +26,7 @@ public class Attendance {
     private String timeOut;
     private boolean isLate;
     private boolean isAbsent;
+    private boolean onLeave;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "employeeId")
@@ -34,13 +35,15 @@ public class Attendance {
     public Attendance() {
     }
 
-    public Attendance(String date, String timeIn, String timeOut, boolean isLate, boolean isAbsent, Employees employee) {
+    public Attendance(String date, String timeIn, String timeOut, boolean isLate, boolean isAbsent,
+                      boolean onLeave, Employees employee) {
         this.name = employee.getFirstName().strip() + " " + employee.getLastName().strip();
         this.date = date;
         this.timeIn = timeIn;
         this.timeOut = timeOut;
         this.isLate = isLate;
         this.isAbsent = isAbsent;
+        this.onLeave = onLeave;
         this.employee = employee;
     }
 
@@ -110,6 +113,14 @@ public class Attendance {
 
     public void setLate(boolean late) {
         isLate = late;
+    }
+
+    public boolean isOnLeave() {
+        return onLeave;
+    }
+
+    public void setOnLeave(boolean onLeave) {
+        this.onLeave = onLeave;
     }
 
     public Employees getEmployee() {
