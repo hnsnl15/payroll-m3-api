@@ -19,7 +19,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -112,7 +114,19 @@ public class EmployeeService {
         return ResponseEntity.ok().build();
     }
 
-    public double calculateSalary(String username, String startDate, String endDate) {
+    public Map<String, Double> retrieveCalculationData(String username, String startDate, String endDate) {
+        BigDecimal wage = BigDecimal.valueOf(calculateSalary(username, startDate, endDate));
+        Map<String, Double> data = new HashMap<>();
+        data.put("sss", calculateSSSContribution(wage));
+        data.put("philhealth", calculatePhilhealthContribution(wage));
+        data.put("pagibig", calculatePagibigContribution(wage));
+        data.put("netIncome", calculateNetIncome(wage));
+        data.put("totalDeductions", calculateTotalDeduction(wage));
+        return data;
+    }
+
+
+    private double calculateSalary(String username, String startDate, String endDate) {
         Optional<Employees> employee = retrieveEmployeeByUsername(username);
         long hoursWorked = attendanceService.calculateHoursWorked(username, startDate, endDate);
         BigDecimal rate = employee.get().getHourlyRate();
