@@ -2,6 +2,7 @@ package com.wonderpets.motorph.payrollm3.controller;
 
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +63,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/v1/create-employee")
-    public ResponseEntity<Void> createEmployee(@RequestBody Employees employee) {
+    public ResponseEntity<Void> createEmployee(@Valid @RequestBody Employees employee) {
         return this.employeeService.createEmployee(employee);
     }
 

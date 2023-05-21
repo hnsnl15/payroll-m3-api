@@ -5,7 +5,6 @@ import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.Role;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.sql.DataSource;
@@ -78,7 +75,7 @@ public class EmployeeService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Void> createEmployee(@Valid @RequestBody Employees employee) {
+    public ResponseEntity<Void> createEmployee(Employees employee) {
         if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent())
             throw new UserAlreadyCreatedException("Username is not available.");
 
@@ -96,7 +93,7 @@ public class EmployeeService {
         return ResponseEntity.created(location).build();
     }
 
-    public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employees employee) {
+    public ResponseEntity<Void> updateEmployeeById(long id, Employees employee) {
         if (employeeJpaRepository.findById(id).isEmpty())
             throw new UserNotFoundException("Employee is not on the record");
         employeeJpaRepository.save(employee);
