@@ -29,11 +29,16 @@ public class EmployeeService {
     private final EmployeeJpaRepository employeeJpaRepository;
     private final DataSource dataSource;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AttendanceService attendanceService;
 
-    public EmployeeService(EmployeeJpaRepository employeeJpaRepository, DataSource dataSource, BCryptPasswordEncoder passwordEncoder) {
+    public EmployeeService(EmployeeJpaRepository employeeJpaRepository,
+                           DataSource dataSource,
+                           BCryptPasswordEncoder passwordEncoder,
+                           AttendanceService attendanceService) {
         this.employeeJpaRepository = employeeJpaRepository;
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
+        this.attendanceService = attendanceService;
     }
 
     public void userDetailsService(String username, String password) {
@@ -69,6 +74,12 @@ public class EmployeeService {
         return employee;
     }
 
+    public Optional<Employees> retrieveEmployeeByUsername(String username) {
+        Optional<Employees> employee = this.employeeJpaRepository.findByUsername(username);
+        if (employee.isEmpty()) throw new UserNotFoundException("Employee is not in the record.");
+        return employee;
+    }
+
     public ResponseEntity<Void> deleteEmployeeById(long id) {
         if (this.employeeJpaRepository.findById(id).isEmpty())
             throw new UserNotFoundException("Unable to delete employee, employee not found.");
@@ -99,6 +110,13 @@ public class EmployeeService {
             throw new UserNotFoundException("Employee is not on the record");
         employeeJpaRepository.save(employee);
         return ResponseEntity.ok().build();
+    }
+
+    public double calculateSalary(String username, String startDate, String endDate) {
+        Optional<Employees> employee = retrieveEmployeeByUsername(username);
+        long hoursWorked = attendanceService.calculateHoursWorked(username, startDate, endDate);
+        BigDecimal rate = employee.get().getHourlyRate();
+        return rate.multiply(BigDecimal.valueOf(hoursWorked)).doubleValue();
     }
 
     private double calculateSSSContribution(BigDecimal wage) {
