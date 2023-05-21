@@ -30,7 +30,7 @@ public class InventoryController {
         for (Inventory stock : inventoryList) {
             EntityModel<Inventory> stockEntityModel = EntityModel.of(stock);
             WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
-                    .retrieveStockByEngineNumber(stock.getEngineNumber()));
+                    .retrieveStockById(stock.getId()));
             stockEntityModel.add(linkBuilder.withSelfRel());
             stockEntityModels.add(stockEntityModel);
         }
@@ -42,9 +42,9 @@ public class InventoryController {
         return wrapListOfInventoryIntoEntityModels(this.inventoryService.retrieveAllStock());
     }
 
-    @GetMapping("/v1/inventory/{engineNumber}")
-    public EntityModel<Optional<Inventory>> retrieveStockByEngineNumber(@PathVariable String engineNumber) {
-        Optional<Inventory> stock = this.inventoryService.retrieveStockByEngineNumber(engineNumber);
+    @GetMapping("/v1/inventory/{id}")
+    public EntityModel<Optional<Inventory>> retrieveStockById(@PathVariable long id) {
+        Optional<Inventory> stock = this.inventoryService.retrieveStockById(id);
         EntityModel<Optional<Inventory>> stockEntityModel = EntityModel.of(stock);
         WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass())
                 .retrieveAllStock());
@@ -64,14 +64,14 @@ public class InventoryController {
         return this.inventoryService.createStock(inventory);
     }
 
-    @PutMapping("/v1/inventory/{engineNumber}")
-    public ResponseEntity<Void> updateStock(@PathVariable String engineNumber, @RequestBody Inventory stock) {
-        return this.inventoryService.updateStock(engineNumber, stock);
+    @PutMapping("/v1/inventory/{id}")
+    public ResponseEntity<Void> updateStock(@PathVariable long id, @RequestBody Inventory stock) {
+        return this.inventoryService.updateStock(id, stock);
     }
 
-    @DeleteMapping("/v1/inventory/{engineNumber}")
-    public ResponseEntity<Void> deleteStock(@PathVariable String engineNumber) {
-        return this.inventoryService.deleteStock(engineNumber);
+    @DeleteMapping("/v1/inventory/{id}")
+    public ResponseEntity<Void> deleteStock(@PathVariable long id) {
+        return this.inventoryService.deleteStock(id);
     }
 
 }
