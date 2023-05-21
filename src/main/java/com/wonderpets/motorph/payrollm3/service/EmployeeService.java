@@ -119,6 +119,13 @@ public class EmployeeService {
         return rate.multiply(BigDecimal.valueOf(hoursWorked)).doubleValue();
     }
 
+    private double calculateTotalDeduction(BigDecimal wage) {
+        double getSSS = calculateSSSContribution(wage);
+        double getPhilhealth = calculatePhilhealthContribution(wage);
+        double getPagibig = calculatePagibigContribution(wage);
+        return getSSS + getPhilhealth + getPagibig;
+    }
+
     private double calculateSSSContribution(BigDecimal wage) {
         double salary = wage.doubleValue();
         double contribution = 1125.00;
@@ -224,8 +231,8 @@ public class EmployeeService {
         return wage.doubleValue() < 1500 ? wage.doubleValue() * 0.01 : 100;
     }
 
-    private double calculateTax(BigDecimal wage, double SSS, double pagibig, double philhealth) {
-        double salary = wage.doubleValue() - (SSS + pagibig + philhealth);
+    private double calculateTax(BigDecimal wage) {
+        double salary = wage.doubleValue() - calculateTotalDeduction(wage);
         double taxRate = 0;
 
         if (salary > 20832 && salary <= 33333) {
@@ -243,8 +250,8 @@ public class EmployeeService {
         return taxRate;
     }
 
-    private double calculateNetIncome(BigDecimal wage, double tax) {
-        return (wage.doubleValue() - tax) / 2;
+    private double calculateNetIncome(BigDecimal wage) {
+        return (wage.doubleValue() - calculateTax(wage)) / 2;
     }
 
 
