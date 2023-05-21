@@ -67,7 +67,7 @@ public class AttendanceService {
 
     public Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
         return employeeJpaRepository.findById(id)
-                .map(employee -> attendanceJpaRepository.findAllByEmployee(employee, pageable))
+                .map(employee -> attendanceJpaRepository.findAllByEmployeeWithPageable(employee, pageable))
                 .orElse(Page.empty());
     }
 
@@ -88,7 +88,7 @@ public class AttendanceService {
         Employees employee = this.employeeJpaRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Employee is not in the record."));
 
-        List<Attendance> attendances = this.attendanceJpaRepository.findAllByEmployee(employee);
+        List<Attendance> attendances = this.attendanceJpaRepository.findAllByEmployeeWithoutPageable(employee);
         if (attendances.isEmpty()) throw new NoSuchElementException("Attendance is not available.");
 
         LocalDate start = formatStringDate(startDate);
