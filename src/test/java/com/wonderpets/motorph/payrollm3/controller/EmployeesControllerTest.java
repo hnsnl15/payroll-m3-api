@@ -135,54 +135,54 @@ public class EmployeesControllerTest {
     }
 
     @Test
-    public void testRetrieveAllEmployee() throws Exception {
+    public void shouldRetrieveAllEmployee() throws Exception {
         mockGetOption("/api/v1/employees").andExpect(status().isOk());
         clearUserTable();
     }
 
     @Test
-    public void testRetrieveEmployeesByPagination() throws Exception {
+    public void shouldRetrieveEmployeesByPagination() throws Exception {
         mockGetOption("/api/v2/employees").andExpect(status().isOk());
     }
 
     @Test
-    public void testRetrieveEmployeeById() throws Exception {
+    public void shouldRetrieveEmployeeById() throws Exception {
         mockGetOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId()).andExpect(status().isOk());
         mockGetOption("/api/v1/employees/12345").andExpect(status().isNotFound());
     }
 
     @Test
-    public void testDeleteEmployeeById() throws Exception {
+    public void shouldDeleteEmployeeById() throws Exception {
         mockDeleteOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId()).andExpect(status().isOk());
         mockDeleteOption("/api/v1/employees/123456").andExpect(status().isNotFound());
         mockDeleteOption("/api/v1/employees/gfsdgdfgdf").andExpect(status().isBadRequest());
     }
 
     @Test
-    void createEmployee_WhenUsernameIsAvailable_ShouldReturnCreated() throws Exception {
+    void shouldCreateEmployeeWhenUsernameIsAvailableShouldReturnCreated() throws Exception {
         clearDataPerTest();
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isCreated());
         clearUserTable();
     }
 
     @Test
-    void createEmployee_WhenUsernameIsNotAvailable_ShouldReturnBadRequest() throws Exception {
+    void shouldCreateEmployeeWhenUsernameIsNotAvailableShouldReturnBadRequest() throws Exception {
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isBadRequest());
     }
 
     @Test
-    void createEmployee_WithPasswordLessThan_Char() throws Exception {
+    void shouldCreateEmployeeWithPasswordLessThanCharShouldReturnBadRequest() throws Exception {
         employee.setPassword("123");
         mockPostOption("/api/v1/create-employee", employee).andExpect(status().isBadRequest());
     }
 
     @Test
-    void updateEmployee_WhenIdIsAvailable() throws Exception {
+    void shouldUpdateEmployeeWhenIdIsAvailable() throws Exception {
         mockPutOption("/api/v1/employees/" + getTestEmployee().get().getEmployeeId(), employee).andExpect(status().isOk());
     }
 
     @Test
-    void updateEmployee_WhenIdIsNotAvailable_ShouldReturnBadRequest() throws Exception {
+    void shouldUpdateEmployeeWhenIdIsNotAvailableShouldReturnBadRequest() throws Exception {
         clearDataPerTest();
         mockPutOption("/api/v1/employees/" + 1, employee)
                 .andExpect(status().isNotFound());
