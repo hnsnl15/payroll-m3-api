@@ -104,53 +104,40 @@ public class InventoryControllerTest {
     }
 
     @Test
-    public void testRetrieveAllInventory() throws Exception {
+    public void shouldRetrieveAllInventory() throws Exception {
         mockGetOption("/api/v1/inventory").andExpect(status().isOk());
         this.inventoryJpaRepository.deleteAll();
         mockGetOption("/api/v1/inventory").andExpect(status().isNotFound());
     }
 
     @Test
-    public void testRetrieveInventoryByPagination() throws Exception {
+    public void shouldRetrieveInventoryByPagination() throws Exception {
         mockGetOption("/api/v2/inventory?engineNumber=FGRTERTY768").andExpect(status().isOk());
     }
 
     @Test
-    public void testRetrieveInventoryByEngineNumber() throws Exception {
+    public void shouldRetrieveInventoryByEngineNumber() throws Exception {
         mockGetOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber()).andExpect(status().isOk());
         mockGetOption("/api/v1/inventory/12345").andExpect(status().isNotFound());
     }
 
     @Test
-    void createStock() {
-        Optional<Inventory> inventoryOptional = getTestStock();
-        inventoryOptional.ifPresent(value -> {
-            this.inventoryJpaRepository.deleteById(value.getId());
-            try {
-                mockPostOption("/api/v1/inventory/create-stock", stock1).andExpect(status().isCreated());
-                clearDataPerTest();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    @Test
-    void createStockWhenEngineNumberIsAlreadyUsed() throws Exception {
+    void shouldCreateStock() throws Exception {
         mockPostOption("/api/v1/inventory/create-stock", stock1).andExpect(status().isBadRequest());
+        clearDataPerTest();
+        mockPostOption("/api/v1/inventory/create-stock", stock1).andExpect(status().isCreated());
     }
 
     @Test
-    void updateStock() throws Exception {
+    void shouldUpdateStock() throws Exception {
         mockPutOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber(), stock1).andExpect(status().isOk());
         mockPutOption("/api/v1/inventory/111111", stock1).andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteStock() throws Exception {
+    void shouldDeleteStock() throws Exception {
         mockDeleteOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber())
                 .andExpect(status().isOk());
     }
-
 
 }

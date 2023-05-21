@@ -2,6 +2,7 @@ package com.wonderpets.motorph.payrollm3.controller;
 
 import com.wonderpets.motorph.payrollm3.model.Attendance;
 import com.wonderpets.motorph.payrollm3.service.AttendanceService;
+import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -67,7 +68,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/v1/create-attendance")
-    public ResponseEntity<Void> createAttendance(@RequestBody Attendance attendance) {
+    public ResponseEntity<Void> createAttendance(@Valid @RequestBody Attendance attendance) {
         return this.attendanceService.createAttendance(attendance);
     }
 

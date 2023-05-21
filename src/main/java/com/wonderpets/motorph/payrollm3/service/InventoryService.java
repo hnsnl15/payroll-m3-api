@@ -4,15 +4,12 @@ import com.wonderpets.motorph.payrollm3.exception.StockEngineNumberAlreadyUsed;
 import com.wonderpets.motorph.payrollm3.exception.StockNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.InventoryJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Inventory;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -31,7 +28,7 @@ public class InventoryService {
     }
 
 
-    public ResponseEntity<Void> createStock(@Valid @RequestBody Inventory inventory) {
+    public ResponseEntity<Void> createStock(Inventory inventory) {
         if (inventoryJpaRepository.findByEngineNumber(inventory.getEngineNumber()).isPresent()) {
             throw new StockEngineNumberAlreadyUsed("Stock engine number is already in the record.");
         }
@@ -49,7 +46,7 @@ public class InventoryService {
         return inventoryList;
     }
 
-    public Optional<Inventory> retrieveStockByEngineNumber(@PathVariable String engineNumber) {
+    public Optional<Inventory> retrieveStockByEngineNumber(String engineNumber) {
         Optional<Inventory> stock = this.inventoryJpaRepository.findByEngineNumber(engineNumber);
         if (stock.isEmpty()) throw new StockNotFoundException("Stock is not in the record.");
         return stock;
@@ -68,14 +65,14 @@ public class InventoryService {
                 .orElse(Page.empty());
     }
 
-    public ResponseEntity<Void> updateStock(@PathVariable String engineNumber, @RequestBody Inventory stock) {
+    public ResponseEntity<Void> updateStock(String engineNumber, Inventory stock) {
         if (this.inventoryJpaRepository.findByEngineNumber(engineNumber).isEmpty())
             throw new StockNotFoundException("Stock is not in the record.");
         this.inventoryJpaRepository.save(stock);
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Void> deleteStock(@PathVariable String engineNumber) {
+    public ResponseEntity<Void> deleteStock(String engineNumber) {
         if (this.inventoryJpaRepository.findByEngineNumber(engineNumber).isEmpty())
             throw new StockNotFoundException("Unable to delete, no stock found!");
         this.inventoryJpaRepository.deleteByEngineNumber(engineNumber);

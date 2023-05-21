@@ -172,29 +172,29 @@ public class AttendanceControllerTest {
     }
 
     @Test
-    public void testRetrieveAllAttendance() throws Exception {
+    public void shouldRetrieveAllAttendance() throws Exception {
         mockGetOption("/api/v1/attendances").andExpect(status().isOk());
     }
 
     @Test
-    public void testRetrieveAttendancesById() throws Exception {
+    public void shouldRetrieveAttendancesById() throws Exception {
         mockGetOption("/api/v1/attendances/" + getTestAttendance().get().getId()).andExpect(status().isOk());
     }
 
     @Test
-    public void testRetrieveAttendancesByPagination() throws Exception {
+    public void shouldRetrieveAttendancesByPagination() throws Exception {
         mockGetOption("/api/v2/attendances").andExpect(status().isOk());
         mockGetOption("/api/v3/attendances?id=" + getTestAttendance().get().getId()).andExpect(status().isOk());
     }
 
     @Test
-    void createAttendance_WhenDateIsValid_ShouldReturnOk() throws Exception {
+    void shouldCreateAttendanceWhenDateIsValidAndReturnOk() throws Exception {
         deleteAttendance();
         mockPostOption("/api/v1/create-attendance", attendance).andExpect(status().isCreated());
     }
 
     @Test
-    void createEmployee_WhenDateIsInTheFuture_ShouldReturnBadRequest() throws Exception {
+    void shouldNotCreateAttendanceWhenDateIsInTheFutureAndReturnBadRequest() throws Exception {
         deleteAttendance();
         attendance.setDate(LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         mockPostOption("/api/v1/create-attendance", attendance).andExpect(status().isBadRequest());

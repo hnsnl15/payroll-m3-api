@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -64,7 +63,7 @@ public class AttendanceService {
                 .orElse(Page.empty());
     }
 
-    public ResponseEntity<Void> createAttendance(@RequestBody Attendance attendance) {
+    public ResponseEntity<Void> createAttendance(Attendance attendance) {
         LocalDate attendanceDate = LocalDate.parse(attendance.getDate());
         if (attendanceDate.isAfter(LocalDate.now())) {
             return ResponseEntity.badRequest().build();
