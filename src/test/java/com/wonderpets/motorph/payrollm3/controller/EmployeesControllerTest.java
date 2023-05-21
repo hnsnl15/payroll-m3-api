@@ -1,7 +1,9 @@
 package com.wonderpets.motorph.payrollm3.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wonderpets.motorph.payrollm3.jpa.AttendanceJpaRepository;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
+import com.wonderpets.motorph.payrollm3.model.Attendance;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -53,6 +56,10 @@ public class EmployeesControllerTest {
             10000.0,
             25.0
     );
+
+    private final Attendance attendance = new Attendance(
+            "2023-05-17", "09:00", "17:00", false, false, employee);
+
     @Value("${jwt.admin.username}")
     private String adminUsername;
     @Value("${jwt.admin.password}")
@@ -61,6 +68,8 @@ public class EmployeesControllerTest {
     private UserDetailsService userDetailsService;
     @Autowired
     private EmployeeJpaRepository employeeJpaRepository;
+    @Autowired
+    private AttendanceJpaRepository attendanceJpaRepository;
     @Autowired
     private JwtAuthController jwtAuthController;
     @Autowired
@@ -131,6 +140,7 @@ public class EmployeesControllerTest {
 
     @AfterEach
     public void clearDataPerTest() {
+        if (!this.attendanceJpaRepository.findAll().isEmpty()) this.attendanceJpaRepository.delete(attendance);
         if (getTestEmployee().isPresent()) employeeJpaRepository.deleteById(getTestEmployee().get().getEmployeeId());
     }
 
@@ -186,6 +196,15 @@ public class EmployeesControllerTest {
         clearDataPerTest();
         mockPutOption("/api/v1/employees/" + 1, employee)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldCalculateRespondOk() throws Exception {
+        this.attendanceJpaRepository.save(attendance);
+        attendance.setDate(String.valueOf(LocalDate.now()));
+        this.attendanceJpaRepository.save(attendance);
+        mockGetOption("/api/v1/employees/get-calculation-data/" + employee.getUsername()
+                + "?startDate=" + attendance.getDate() + "&endDate=" + LocalDate.now()).andExpect(status().isOk());
     }
 
 
