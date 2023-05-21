@@ -117,7 +117,7 @@ public class InventoryControllerTest {
 
     @Test
     public void shouldRetrieveInventoryByEngineNumber() throws Exception {
-        mockGetOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber()).andExpect(status().isOk());
+        mockGetOption("/api/v1/inventory/" + getTestStock().get().getId()).andExpect(status().isOk());
         mockGetOption("/api/v1/inventory/12345").andExpect(status().isNotFound());
     }
 
@@ -130,13 +130,13 @@ public class InventoryControllerTest {
 
     @Test
     void shouldUpdateStock() throws Exception {
-        mockPutOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber(), stock1).andExpect(status().isOk());
+        mockPutOption("/api/v1/inventory/" + getTestStock().get().getId(), stock1).andExpect(status().isOk());
         mockPutOption("/api/v1/inventory/111111", stock1).andExpect(status().isNotFound());
     }
 
     @Test
     void shouldDeleteStock() throws Exception {
-        mockDeleteOption("/api/v1/inventory/" + getTestStock().get().getEngineNumber())
+        mockDeleteOption("/api/v1/inventory/" + getTestStock().get().getId())
                 .andExpect(status().isOk());
     }
 

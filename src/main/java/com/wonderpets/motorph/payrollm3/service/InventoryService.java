@@ -29,7 +29,7 @@ public class InventoryService {
 
 
     public ResponseEntity<Void> createStock(Inventory inventory) {
-        if (inventoryJpaRepository.findByEngineNumber(inventory.getEngineNumber()).isPresent()) {
+        if (inventoryJpaRepository.findById(inventory.getId()).isPresent()) {
             throw new StockEngineNumberAlreadyUsed("Stock engine number is already in the record.");
         }
         Inventory createdStock = this.inventoryJpaRepository.save(inventory);
@@ -46,8 +46,8 @@ public class InventoryService {
         return inventoryList;
     }
 
-    public Optional<Inventory> retrieveStockByEngineNumber(String engineNumber) {
-        Optional<Inventory> stock = this.inventoryJpaRepository.findByEngineNumber(engineNumber);
+    public Optional<Inventory> retrieveStockById(long id) {
+        Optional<Inventory> stock = this.inventoryJpaRepository.findById(id);
         if (stock.isEmpty()) throw new StockNotFoundException("Stock is not in the record.");
         return stock;
     }
@@ -65,17 +65,17 @@ public class InventoryService {
                 .orElse(Page.empty());
     }
 
-    public ResponseEntity<Void> updateStock(String engineNumber, Inventory stock) {
-        if (this.inventoryJpaRepository.findByEngineNumber(engineNumber).isEmpty())
+    public ResponseEntity<Void> updateStock(long id, Inventory stock) {
+        if (this.inventoryJpaRepository.findById(id).isEmpty())
             throw new StockNotFoundException("Stock is not in the record.");
         this.inventoryJpaRepository.save(stock);
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Void> deleteStock(String engineNumber) {
-        if (this.inventoryJpaRepository.findByEngineNumber(engineNumber).isEmpty())
+    public ResponseEntity<Void> deleteStock(long id) {
+        if (this.inventoryJpaRepository.findById(id).isEmpty())
             throw new StockNotFoundException("Unable to delete, no stock found!");
-        this.inventoryJpaRepository.deleteByEngineNumber(engineNumber);
+        this.inventoryJpaRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 

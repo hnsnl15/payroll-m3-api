@@ -67,7 +67,7 @@ public class AttendanceService {
 
     public Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
         return employeeJpaRepository.findById(id)
-                .map(employee -> attendanceJpaRepository.findAllByEmployee(employee, pageable))
+                .map(employee -> attendanceJpaRepository.findAllByEmployeeWithPageable(employee, pageable))
                 .orElse(Page.empty());
     }
 
@@ -85,25 +85,26 @@ public class AttendanceService {
     }
 
     public long calculateHoursWorked(String username, String startDate, String endDate) {
-        Employees employee = this.employeeJpaRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("Employee is not in the record."));
+        Employees employee = getEmployeeByUsername(username);
 
-        List<Attendance> attendances = this.attendanceJpaRepository.findAllByEmployee(employee);
-        if (attendances.isEmpty()) throw new NoSuchElementException("Attendance is not available.");
+        List<Attendance> attendances = getAttendances(employee);
+        if (attendances.isEmpty()) {
+            throw new NoSuchElementException("Attendance is not available.");
+        }
 
-        LocalDate start = formatStringDate(startDate);
-        LocalDate end = formatStringDate(endDate);
+        LocalDate start = parseDate(startDate);
+        LocalDate end = parseDate(endDate);
 
         long totalHoursWorked = 0;
 
         for (Attendance attendance : attendances) {
-            LocalDate attendanceDate = LocalDate.parse(attendance.getDate());
-            if (attendanceDate.isBefore(start) || attendanceDate.isAfter(end)) {
-                continue; // Skip attendance records outside the specified date range
+            LocalDate attendanceDate = parseDate(attendance.getDate());
+            if (isDateOutsideRange(attendanceDate, start, end)) {
+                continue;
             }
 
-            LocalTime startTime = LocalTimeParser(attendance.getTimeIn());
-            LocalTime endTime = LocalTimeParser(attendance.getTimeOut());
+            LocalTime startTime = parseTime(attendance.getTimeIn());
+            LocalTime endTime = parseTime(attendance.getTimeOut());
 
             LocalDateTime startDateTime = LocalDateTime.of(attendanceDate, startTime);
             LocalDateTime endDateTime = LocalDateTime.of(attendanceDate, endTime);
@@ -115,19 +116,62 @@ public class AttendanceService {
         return totalHoursWorked;
     }
 
-    private LocalDate formatStringDate(String dateString) {
+    public long calculateHoursLeave(String username, String startDate, String endDate) {
+        Employees employee = getEmployeeByUsername(username);
+
+        List<Attendance> attendances = getAttendances(employee);
+        if (attendances.isEmpty()) {
+            throw new NoSuchElementException("Attendance is not available.");
+        }
+
+        LocalDate start = parseDate(startDate);
+        LocalDate end = parseDate(endDate);
+
+        long totalHoursLeave = 0;
+
+        for (Attendance attendance : attendances) {
+            LocalDate attendanceDate = parseDate(attendance.getDate());
+            if (isDateOutsideRange(attendanceDate, start, end)) {
+                continue;
+            }
+
+            LocalTime startTime = parseTime(attendance.getTimeIn());
+            LocalTime endTime = parseTime(attendance.getTimeOut());
+
+            LocalDateTime startDateTime = LocalDateTime.of(attendanceDate, startTime);
+            LocalDateTime endDateTime = LocalDateTime.of(attendanceDate, endTime);
+
+            long hoursWorked = startDateTime.until(endDateTime, ChronoUnit.HOURS);
+
+            if (attendance.isOnLeave()) {
+                totalHoursLeave += hoursWorked;
+            }
+        }
+
+        return totalHoursLeave;
+    }
+
+    private Employees getEmployeeByUsername(String username) {
+        return employeeJpaRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Employee is not in the record."));
+    }
+
+    private List<Attendance> getAttendances(Employees employee) {
+        return attendanceJpaRepository.findAllByEmployeeWithoutPageable(employee);
+    }
+
+    private LocalDate parseDate(String dateString) {
         List<String> patterns = List.of("yyyy-MM-dd", "MM/dd/yyyy");
         for (String pattern : patterns) {
             try {
-                LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern(pattern));
-                return LocalDate.parse(localDate.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                return LocalDate.parse(dateString, DateTimeFormatter.ofPattern(pattern));
             } catch (DateTimeParseException ignored) {
             }
         }
         throw new IllegalArgumentException("Invalid date format: " + dateString);
     }
 
-    private LocalTime LocalTimeParser(String time) {
+    private LocalTime parseTime(String time) {
         String[] patterns = {"H:mm", "HH:mm"};
         for (String pattern : patterns) {
             try {
@@ -136,6 +180,10 @@ public class AttendanceService {
             }
         }
         throw new IllegalArgumentException("Invalid time format: " + time);
+    }
+
+    private boolean isDateOutsideRange(LocalDate date, LocalDate start, LocalDate end) {
+        return date.isBefore(start) || date.isAfter(end);
     }
 
 
