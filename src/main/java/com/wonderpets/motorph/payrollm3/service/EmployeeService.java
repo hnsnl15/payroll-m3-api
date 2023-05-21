@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +99,134 @@ public class EmployeeService {
             throw new UserNotFoundException("Employee is not on the record");
         employeeJpaRepository.save(employee);
         return ResponseEntity.ok().build();
+    }
+
+    private double calculateSSSContribution(BigDecimal wage) {
+        double salary = wage.doubleValue();
+        double contribution = 1125.00;
+
+        if (salary <= 3250) {
+            contribution = 135.00;
+        } else if (salary <= 3750) {
+            contribution = 157.50;
+        } else if (salary <= 4250) {
+            contribution = 180.00;
+        } else if (salary <= 4750) {
+            contribution = 202.50;
+        } else if (salary <= 5250) {
+            contribution = 225.00;
+        } else if (salary <= 5750) {
+            contribution = 247.50;
+        } else if (salary <= 6250) {
+            contribution = 315.00;
+        } else if (salary <= 6750) {
+            contribution = 337.50;
+        } else if (salary <= 7250) {
+            contribution = 360.00;
+        } else if (salary <= 7750) {
+            contribution = 382.50;
+        } else if (salary <= 8250) {
+            contribution = 405.00;
+        } else if (salary <= 8750) {
+            contribution = 427.50;
+        } else if (salary <= 9250) {
+            contribution = 450.00;
+        } else if (salary <= 9750) {
+            contribution = 472.50;
+        } else if (salary <= 10250) {
+            contribution = 495.00;
+        } else if (salary <= 10750) {
+            contribution = 517.50;
+        } else if (salary <= 11250) {
+            contribution = 540.00;
+        } else if (salary <= 11750) {
+            contribution = 562.50;
+        } else if (salary <= 12250) {
+            contribution = 585.00;
+        } else if (salary <= 12750) {
+            contribution = 607.50;
+        } else if (salary <= 13250) {
+            contribution = 630.00;
+        } else if (salary <= 13750) {
+            contribution = 652.50;
+        } else if (salary <= 14250) {
+            contribution = 697.50;
+        } else if (salary <= 14750) {
+            contribution = 720.00;
+        } else if (salary <= 15250) {
+            contribution = 742.50;
+        } else if (salary <= 15750) {
+            contribution = 765.00;
+        } else if (salary <= 16250) {
+            contribution = 787.50;
+        } else if (salary <= 16750) {
+            contribution = 810.00;
+        } else if (salary <= 17250) {
+            contribution = 832.50;
+        } else if (salary <= 17750) {
+            contribution = 855.00;
+        } else if (salary <= 18250) {
+            contribution = 877.50;
+        } else if (salary <= 18750) {
+            contribution = 900.00;
+        } else if (salary <= 19250) {
+            contribution = 922.50;
+        } else if (salary <= 19750) {
+            contribution = 945.50;
+        } else if (salary <= 20250) {
+            contribution = 990.00;
+        } else if (salary <= 20750) {
+            contribution = 1012.50;
+        } else if (salary <= 21250) {
+            contribution = 1035.00;
+        } else if (salary <= 21750) {
+            contribution = 1057.50;
+        } else if (salary <= 22250) {
+            contribution = 1080.00;
+        } else if (salary <= 22750) {
+            contribution = 1012.50;
+        } else if (salary <= 23250) {
+            contribution = 1035.00;
+        } else if (salary <= 23750) {
+            contribution = 1057.50;
+        } else if (salary <= 24250) {
+            contribution = 1080.00;
+        } else if (salary <= 24750) {
+            contribution = 1102.50;
+        }
+
+        return contribution;
+    }
+
+    private double calculatePhilhealthContribution(BigDecimal wage) {
+        return wage.doubleValue() * 0.015;
+    }
+
+    private double calculatePagibigContribution(BigDecimal wage) {
+        return wage.doubleValue() < 1500 ? wage.doubleValue() * 0.01 : 100;
+    }
+
+    private double calculateTax(BigDecimal wage, double SSS, double pagibig, double philhealth) {
+        double salary = wage.doubleValue() - (SSS + pagibig + philhealth);
+        double taxRate = 0;
+
+        if (salary > 20832 && salary <= 33333) {
+            taxRate = (salary - 20833) * 0.20;
+        } else if (salary > 33333 && salary <= 66667) {
+            taxRate = 2500 + ((salary - 33333) * 0.25);
+        } else if (salary > 66667 && salary <= 166667) {
+            taxRate = 10833 + ((salary - 66667) * 0.30);
+        } else if (salary > 166667 && salary <= 666667) {
+            taxRate = 166667 + ((salary - 40833.33) * 0.32);
+        } else if (salary > 666667) {
+            taxRate = 200833.33 + ((salary - 666667) * 0.35);
+        }
+
+        return taxRate;
+    }
+
+    private double calculateNetIncome(BigDecimal wage, double tax) {
+        return (wage.doubleValue() - tax) / 2;
     }
 
 
