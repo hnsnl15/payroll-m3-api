@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonderpets.motorph.payrollm3.model.LoginForm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -19,9 +20,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class JwtAuthControllerTest {
 
-    private final LoginForm loginForm = new LoginForm("admin", "123");
+    private final LoginForm loginForm;
     @Autowired
     private MockMvc mockMvc;
+
+    public JwtAuthControllerTest(@Value("${jwt.admin.username}") String adminUsername,
+                                 @Value("${jwt.admin.password}") String adminPassword
+    ) {
+        this.loginForm = new LoginForm(adminUsername, adminPassword);
+    }
 
     private ResultActions mockPostOption(String urlTemplate, LoginForm userDetails) throws Exception {
         String requestBody = new ObjectMapper().writeValueAsString(userDetails);
