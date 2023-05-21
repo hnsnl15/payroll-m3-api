@@ -117,24 +117,34 @@ public class EmployeeService {
 
     public Map<String, Double> retrieveCalculationData(String username, String startDate, String endDate) {
         BigDecimal wage = BigDecimal.valueOf(calculateSalary(username, startDate, endDate));
+        long leaveHours = calculateLeaveHours(username, startDate, endDate);
 
         Map<String, Double> data = new HashMap<>();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        data.put("sss", Double.parseDouble(decimalFormat.format(calculateSSSContribution(wage))));
-        data.put("philhealth", Double.parseDouble(decimalFormat.format(calculatePhilhealthContribution(wage))));
-        data.put("pagibig", Double.parseDouble(decimalFormat.format(calculatePagibigContribution(wage))));
-        data.put("netIncome", Double.parseDouble(decimalFormat.format(calculateNetIncome(wage))));
-        data.put("totalDeductions", Double.parseDouble(decimalFormat.format(calculateTotalDeduction(wage))));
+        data.put("sss", formatDecimal(calculateSSSContribution(wage), decimalFormat));
+        data.put("philhealth", formatDecimal(calculatePhilhealthContribution(wage), decimalFormat));
+        data.put("pagibig", formatDecimal(calculatePagibigContribution(wage), decimalFormat));
+        data.put("netIncome", formatDecimal(calculateNetIncome(wage), decimalFormat));
+        data.put("leaveHours", (double) leaveHours);
+        data.put("totalDeductions", formatDecimal(calculateTotalDeduction(wage.subtract(BigDecimal.valueOf(leaveHours))), decimalFormat));
 
         return data;
     }
 
+    private double formatDecimal(double value, DecimalFormat decimalFormat) {
+        return Double.parseDouble(decimalFormat.format(value));
+    }
 
     private double calculateSalary(String username, String startDate, String endDate) {
         Optional<Employees> employee = retrieveEmployeeByUsername(username);
         long hoursWorked = attendanceService.calculateHoursWorked(username, startDate, endDate);
+        long leaveHours = calculateLeaveHours(username, startDate, endDate);
         BigDecimal rate = employee.get().getHourlyRate();
-        return rate.multiply(BigDecimal.valueOf(hoursWorked)).doubleValue();
+        return rate.multiply(BigDecimal.valueOf(hoursWorked - leaveHours)).doubleValue();
+    }
+
+    private long calculateLeaveHours(String username, String startDate, String endDate) {
+        return this.attendanceService.calculateHoursLeave(username, startDate, endDate);
     }
 
     private double calculateTotalDeduction(BigDecimal wage) {
