@@ -32,7 +32,7 @@ public class JwtAuthControllerTest {
     }
 
     @Test
-    void testGetAuthToken_WillPassedTest() throws Exception {
+    void shouldExpectStatusOk() throws Exception {
         mockPostOption("/api/auth-token", loginForm).andExpect(status().isOk());
     }
 
