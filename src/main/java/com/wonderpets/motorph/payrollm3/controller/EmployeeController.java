@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -75,6 +76,13 @@ public class EmployeeController {
     @PutMapping("/v1/employees/{id}")
     public ResponseEntity<Void> updateEmployeeById(@PathVariable long id, @RequestBody Employees employee) {
         return this.employeeService.updateEmployeeById(id, employee);
+    }
+
+    @GetMapping("/v1/employees/get-calculation-data/{username}")
+    public Map<String, Double> retrieveCalculationData(@PathVariable String username,
+                                                       @RequestParam String startDate,
+                                                       @RequestParam String endDate) {
+        return this.employeeService.retrieveCalculationData(username, startDate, endDate);
     }
 
 }

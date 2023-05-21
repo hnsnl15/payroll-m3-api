@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,12 +117,15 @@ public class EmployeeService {
 
     public Map<String, Double> retrieveCalculationData(String username, String startDate, String endDate) {
         BigDecimal wage = BigDecimal.valueOf(calculateSalary(username, startDate, endDate));
+
         Map<String, Double> data = new HashMap<>();
-        data.put("sss", calculateSSSContribution(wage));
-        data.put("philhealth", calculatePhilhealthContribution(wage));
-        data.put("pagibig", calculatePagibigContribution(wage));
-        data.put("netIncome", calculateNetIncome(wage));
-        data.put("totalDeductions", calculateTotalDeduction(wage));
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        data.put("sss", Double.parseDouble(decimalFormat.format(calculateSSSContribution(wage))));
+        data.put("philhealth", Double.parseDouble(decimalFormat.format(calculatePhilhealthContribution(wage))));
+        data.put("pagibig", Double.parseDouble(decimalFormat.format(calculatePagibigContribution(wage))));
+        data.put("netIncome", Double.parseDouble(decimalFormat.format(calculateNetIncome(wage))));
+        data.put("totalDeductions", Double.parseDouble(decimalFormat.format(calculateTotalDeduction(wage))));
+
         return data;
     }
 
