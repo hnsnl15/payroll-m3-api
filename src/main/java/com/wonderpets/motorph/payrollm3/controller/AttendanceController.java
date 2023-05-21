@@ -69,4 +69,11 @@ public class AttendanceController {
         return this.attendanceService.createAttendance(attendance);
     }
 
+    @GetMapping("/v1/calculate/hours-worked/{username}")
+    public long calculateHoursWorkedPerWeek(@PathVariable String username,
+                                            @RequestParam String startDate,
+                                            @RequestParam String endDate) {
+        return this.attendanceService.calculateHoursWorked(username, startDate, endDate);
+    }
+
 }
