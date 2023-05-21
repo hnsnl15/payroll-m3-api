@@ -116,7 +116,7 @@ public class AttendanceService {
         return totalHoursWorked;
     }
 
-    private long calculateHoursLeave(String username, String startDate, String endDate) {
+    public long calculateHoursLeave(String username, String startDate, String endDate) {
         Employees employee = getEmployeeByUsername(username);
 
         List<Attendance> attendances = getAttendances(employee);
