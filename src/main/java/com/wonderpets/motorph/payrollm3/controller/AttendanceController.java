@@ -39,23 +39,20 @@ public class AttendanceController {
 
     @GetMapping("/v1/attendances")
     public List<EntityModel<Attendance>> retrieveAllAttendance() {
-        List<Attendance> attendances = this.attendanceService.retrieveAllAttendance();
-        return mapAttendancesIntoEntityModels(attendances);
+        return mapAttendancesIntoEntityModels(this.attendanceService.retrieveAllAttendance());
     }
 
     @GetMapping("/v2/attendances")
     public List<EntityModel<Attendance>> retrieveAttendances(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "5") int size) {
-        List<Attendance> attendances = this.attendanceService.retrieveAttendances(page, size);
-        return mapAttendancesIntoEntityModels(attendances);
+        return mapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendances(page, size));
     }
 
     @GetMapping("/v3/attendances")
     public List<EntityModel<Attendance>> retrieveAttendances(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "5") int size,
                                                              @RequestParam long id) {
-        List<Attendance> attendances = this.attendanceService.retrieveAttendances(page, size, id);
-        return mapAttendancesIntoEntityModels(attendances);
+        return mapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendances(page, size, id));
     }
 
     @GetMapping("/v1/attendances/{id}")
@@ -70,6 +67,13 @@ public class AttendanceController {
     @PostMapping("/v1/create-attendance")
     public ResponseEntity<Void> createAttendance(@Valid @RequestBody Attendance attendance) {
         return this.attendanceService.createAttendance(attendance);
+    }
+
+    @GetMapping("/v1/calculate/hours-worked/{username}")
+    public long calculateHoursWorkedPerWeek(@PathVariable String username,
+                                            @RequestParam String startDate,
+                                            @RequestParam String endDate) {
+        return this.attendanceService.calculateHoursWorked(username, startDate, endDate);
     }
 
 }

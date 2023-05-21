@@ -38,8 +38,8 @@ public class InventoryController {
     }
 
     @GetMapping("/v1/inventory")
-    public List<Inventory> retrieveAllStock() {
-        return this.inventoryService.retrieveAllStock();
+    public List<EntityModel<Inventory>> retrieveAllStock() {
+        return wrapListOfInventoryIntoEntityModels(this.inventoryService.retrieveAllStock());
     }
 
     @GetMapping("/v1/inventory/{engineNumber}")
@@ -53,10 +53,10 @@ public class InventoryController {
     }
 
     @GetMapping("/v2/inventory")
-    public List<Inventory> retrieveStockByPagination(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "5") int size,
-                                                     @RequestParam String engineNumber) {
-        return this.inventoryService.retrieveStocksByPagination(page, size, engineNumber);
+    public List<EntityModel<Inventory>> retrieveStockByPagination(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "5") int size,
+                                                                  @RequestParam String engineNumber) {
+        return wrapListOfInventoryIntoEntityModels(this.inventoryService.retrieveStocksByPagination(page, size, engineNumber));
     }
 
     @PostMapping("/v1/inventory/create-stock")

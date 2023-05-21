@@ -1,8 +1,10 @@
 package com.wonderpets.motorph.payrollm3.service;
 
+import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
 import com.wonderpets.motorph.payrollm3.jpa.AttendanceJpaRepository;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Attendance;
+import com.wonderpets.motorph.payrollm3.model.Employees;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +15,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -74,6 +82,60 @@ public class AttendanceService {
                 .buildAndExpand(createdAttendance.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    public long calculateHoursWorked(String username, String startDate, String endDate) {
+        Employees employee = this.employeeJpaRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Employee is not in the record."));
+
+        List<Attendance> attendances = this.attendanceJpaRepository.findAllByEmployee(employee);
+        if (attendances.isEmpty()) throw new NoSuchElementException("Attendance is not available.");
+
+        LocalDate start = formatStringDate(startDate);
+        LocalDate end = formatStringDate(endDate);
+
+        long totalHoursWorked = 0;
+
+        for (Attendance attendance : attendances) {
+            LocalDate attendanceDate = LocalDate.parse(attendance.getDate());
+            if (attendanceDate.isBefore(start) || attendanceDate.isAfter(end)) {
+                continue; // Skip attendance records outside the specified date range
+            }
+
+            LocalTime startTime = LocalTimeParser(attendance.getTimeIn());
+            LocalTime endTime = LocalTimeParser(attendance.getTimeOut());
+
+            LocalDateTime startDateTime = LocalDateTime.of(attendanceDate, startTime);
+            LocalDateTime endDateTime = LocalDateTime.of(attendanceDate, endTime);
+
+            long hoursWorked = startDateTime.until(endDateTime, ChronoUnit.HOURS);
+            totalHoursWorked += hoursWorked;
+        }
+
+        return totalHoursWorked;
+    }
+
+    private LocalDate formatStringDate(String dateString) {
+        List<String> patterns = List.of("yyyy-MM-dd", "MM/dd/yyyy");
+        for (String pattern : patterns) {
+            try {
+                LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern(pattern));
+                return LocalDate.parse(localDate.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+        throw new IllegalArgumentException("Invalid date format: " + dateString);
+    }
+
+    private LocalTime LocalTimeParser(String time) {
+        String[] patterns = {"H:mm", "HH:mm"};
+        for (String pattern : patterns) {
+            try {
+                return LocalTime.parse(time, DateTimeFormatter.ofPattern(pattern));
+            } catch (Exception ignored) {
+            }
+        }
+        throw new IllegalArgumentException("Invalid time format: " + time);
     }
 
 

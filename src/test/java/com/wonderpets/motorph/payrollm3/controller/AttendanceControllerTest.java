@@ -200,4 +200,12 @@ public class AttendanceControllerTest {
         mockPostOption("/api/v1/create-attendance", attendance).andExpect(status().isBadRequest());
     }
 
+    @Test
+    void shouldCalculateHoursWorkedAndRespondOk() throws Exception {
+        attendance.setDate(String.valueOf(LocalDate.now()));
+        createData();
+        mockGetOption("/api/v1/calculate/hours-worked/" + employee.getUsername()
+                + "?startDate=" + attendance.getDate() + "&endDate=" + LocalDate.now()).andExpect(status().isOk());
+    }
+
 }
