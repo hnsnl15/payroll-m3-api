@@ -52,23 +52,42 @@ public class AttendanceService {
     public List<Attendance> retrieveAllAttendancePageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Attendance> attendancePage = this.attendanceJpaRepository.findAll(pageable);
-        if (attendancePage.isEmpty()) return null;
-        return attendancePage.getContent();
+        return returnPage(attendancePage);
     }
 
     public List<Attendance> retrieveAttendancesByEmployeeIdPageable(int page, int size, long id) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Attendance> attendancePage = retrieveAttendancesByEmployeeId(id, pageable);
-        if (attendancePage.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return attendancePage.getContent();
+        return returnPage(attendancePage);
     }
 
     private Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
         return employeeJpaRepository.findById(id)
                 .map(employee -> attendanceJpaRepository.findAllByEmployeeWithPageable(employee, pageable))
                 .orElse(Page.empty());
+    }
+
+    public List<Attendance> retrieveAttendancesByDatePageable(String date, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate localDate = parseDate(date);
+        String stringDate = formatDateString(localDate);
+        Page<Attendance> attendancePage = this.attendanceJpaRepository.findAllByDatePageable(stringDate, pageable);
+        return returnPage(attendancePage);
+    }
+
+    public List<Attendance> retrieveAttendancesByDateWithIdPageable(String date, long id, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate localDate = parseDate(date);
+        String stringDate = formatDateString(localDate);
+        Page<Attendance> attendancePage = this.attendanceJpaRepository.findAllByDateWithIdPageable(stringDate, id, pageable);
+        return returnPage(attendancePage);
+    }
+
+    private List<Attendance> returnPage(Page<Attendance> attendancePage) {
+        if (attendancePage.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return attendancePage.getContent();
     }
 
     public ResponseEntity<Void> createAttendance(Attendance attendance) {
@@ -180,6 +199,10 @@ public class AttendanceService {
             }
         }
         throw new IllegalArgumentException("Invalid time format: " + time);
+    }
+
+    private String formatDateString(LocalDate localDate) {
+        return LocalDate.parse(localDate.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")).toString();
     }
 
     private boolean isDateOutsideRange(LocalDate date, LocalDate start, LocalDate end) {
