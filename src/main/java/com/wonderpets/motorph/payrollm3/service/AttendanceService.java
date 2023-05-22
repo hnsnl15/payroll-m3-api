@@ -6,6 +6,7 @@ import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Attendance;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -79,9 +81,19 @@ public class AttendanceService {
         Pageable pageable = PageRequest.of(page, size);
         LocalDate localDate = parseDate(date);
         String stringDate = formatDateString(localDate);
-        Page<Attendance> attendancePage = this.attendanceJpaRepository.findAllByDateWithIdPageable(stringDate, id, pageable);
-        return returnPage(attendancePage);
+
+        Employees employee = employeeJpaRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Employee is not in the record!"));
+
+        List<Attendance> attendanceList = attendanceJpaRepository.findAllByDatePageable(stringDate, pageable)
+                .stream()
+                .filter(attendance -> attendance.getEmployee().getEmployeeId() == employee.getEmployeeId())
+                .collect(Collectors.toList());
+
+        Page<Attendance> attendancesPage = new PageImpl<>(attendanceList, pageable, attendanceList.size());
+        return returnPage(attendancesPage);
     }
+
 
     private List<Attendance> returnPage(Page<Attendance> attendancePage) {
         if (attendancePage.isEmpty()) {

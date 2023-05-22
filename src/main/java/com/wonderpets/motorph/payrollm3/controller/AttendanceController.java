@@ -48,11 +48,26 @@ public class AttendanceController {
         return wrapAttendancesIntoEntityModels(this.attendanceService.retrieveAllAttendancePageable(page, size));
     }
 
-    @GetMapping("/v3/attendances")
+    @GetMapping("/v1/attendances/employee")
     public List<EntityModel<Attendance>> retrieveAttendancesByEmployeeIdPageable(@RequestParam(defaultValue = "0") int page,
                                                                                  @RequestParam(defaultValue = "5") int size,
                                                                                  @RequestParam long id) {
         return wrapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendancesByEmployeeIdPageable(page, size, id));
+    }
+
+    @GetMapping("/v1/attendances/date")
+    public List<EntityModel<Attendance>> retrieveAttendancesByDatePageable(@RequestParam String date,
+                                                                           @RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "5") int size) {
+        return wrapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendancesByDatePageable(date, page, size));
+    }
+
+    @GetMapping("/v2/attendances/date")
+    public List<EntityModel<Attendance>> retrieveAttendancesByDateWithIdPageable(@RequestParam String date,
+                                                                                 @RequestParam long id,
+                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                 @RequestParam(defaultValue = "5") int size) {
+        return wrapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendancesByDateWithIdPageable(date, id, page, size));
     }
 
     @GetMapping("/v1/attendances/{id}")

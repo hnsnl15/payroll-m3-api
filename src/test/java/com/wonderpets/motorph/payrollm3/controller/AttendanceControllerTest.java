@@ -184,7 +184,10 @@ public class AttendanceControllerTest {
     @Test
     public void shouldRetrieveAttendancesByPagination() throws Exception {
         mockGetOption("/api/v2/attendances").andExpect(status().isOk());
-        mockGetOption("/api/v3/attendances?id=" + getTestAttendance().get().getId()).andExpect(status().isOk());
+        mockGetOption("/api/v1/attendances/employee?id=" + getTestAttendance().get().getId()).andExpect(status().isOk());
+        mockGetOption("/api/v1/attendances/date?date=" + getTestAttendance().get().getDate()).andExpect(status().isOk());
+        mockGetOption("/api/v2/attendances/date?date=" + getTestAttendance().get().getDate() + "&id="
+                + employee.getEmployeeId()).andExpect(status().isOk());
     }
 
     @Test
