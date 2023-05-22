@@ -25,7 +25,7 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
-    private List<EntityModel<Attendance>> mapAttendancesIntoEntityModels(List<Attendance> attendances) {
+    private List<EntityModel<Attendance>> wrapAttendancesIntoEntityModels(List<Attendance> attendances) {
         List<EntityModel<Attendance>> entityModels = new ArrayList<>();
         for (Attendance attendance : attendances) {
             EntityModel<Attendance> attendanceEntityModel = EntityModel.of(attendance);
@@ -39,20 +39,20 @@ public class AttendanceController {
 
     @GetMapping("/v1/attendances")
     public List<EntityModel<Attendance>> retrieveAllAttendance() {
-        return mapAttendancesIntoEntityModels(this.attendanceService.retrieveAllAttendance());
+        return wrapAttendancesIntoEntityModels(this.attendanceService.retrieveAllAttendance());
     }
 
     @GetMapping("/v2/attendances")
     public List<EntityModel<Attendance>> retrieveAttendances(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "5") int size) {
-        return mapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendances(page, size));
+        return wrapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendances(page, size));
     }
 
     @GetMapping("/v3/attendances")
     public List<EntityModel<Attendance>> retrieveAttendances(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "5") int size,
                                                              @RequestParam long id) {
-        return mapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendances(page, size, id));
+        return wrapAttendancesIntoEntityModels(this.attendanceService.retrieveAttendances(page, size, id));
     }
 
     @GetMapping("/v1/attendances/{id}")
