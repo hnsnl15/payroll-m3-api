@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "person_type")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(allowSetters = true, value = {"password"}, ignoreUnknown = true)
 public class Employees extends Person {
 
     private String lastName;
