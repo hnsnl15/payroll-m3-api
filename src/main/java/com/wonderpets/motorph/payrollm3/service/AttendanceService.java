@@ -49,14 +49,14 @@ public class AttendanceService {
         return attendance;
     }
 
-    public List<Attendance> retrieveAttendances(int page, int size) {
+    public List<Attendance> retrieveAllAttendancePageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Attendance> attendancePage = this.attendanceJpaRepository.findAll(pageable);
         if (attendancePage.isEmpty()) return null;
         return attendancePage.getContent();
     }
 
-    public List<Attendance> retrieveAttendances(int page, int size, long id) {
+    public List<Attendance> retrieveAttendancesByEmployeeIdPageable(int page, int size, long id) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Attendance> attendancePage = retrieveAttendancesByEmployeeId(id, pageable);
         if (attendancePage.isEmpty()) {
@@ -65,7 +65,7 @@ public class AttendanceService {
         return attendancePage.getContent();
     }
 
-    public Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
+    private Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
         return employeeJpaRepository.findById(id)
                 .map(employee -> attendanceJpaRepository.findAllByEmployeeWithPageable(employee, pageable))
                 .orElse(Page.empty());
