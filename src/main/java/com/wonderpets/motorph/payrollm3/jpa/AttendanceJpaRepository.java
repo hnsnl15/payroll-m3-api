@@ -18,5 +18,8 @@ public interface AttendanceJpaRepository extends JpaRepository<Attendance, Long>
     @Query("SELECT a FROM Attendance a WHERE a.employee = :employee")
     List<Attendance> findAllByEmployeeWithoutPageable(@Param("employee") Employees employees);
 
+    @Query("SELECT a FROM Attendance a WHERE a.date = :date")
+    Page<Attendance> findAllByDatePageable(@Param("date") String date, Pageable pageable);
+
     Optional<Attendance> findByName(String name);
 }

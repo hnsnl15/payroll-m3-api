@@ -1,6 +1,5 @@
 package com.wonderpets.motorph.payrollm3.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,7 +9,6 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 @MappedSuperclass
-@JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public class Person {
 
     @Id

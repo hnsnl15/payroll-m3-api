@@ -6,6 +6,7 @@ import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Attendance;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -49,26 +51,55 @@ public class AttendanceService {
         return attendance;
     }
 
-    public List<Attendance> retrieveAttendances(int page, int size) {
+    public List<Attendance> retrieveAllAttendancePageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Attendance> attendancePage = this.attendanceJpaRepository.findAll(pageable);
-        if (attendancePage.isEmpty()) return null;
-        return attendancePage.getContent();
+        return returnPage(attendancePage);
     }
 
-    public List<Attendance> retrieveAttendances(int page, int size, long id) {
+    public List<Attendance> retrieveAttendancesByEmployeeIdPageable(int page, int size, long id) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Attendance> attendancePage = retrieveAttendancesByEmployeeId(id, pageable);
+        return returnPage(attendancePage);
+    }
+
+    private Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
+        return employeeJpaRepository.findById(id)
+                .map(employee -> attendanceJpaRepository.findAllByEmployeeWithPageable(employee, pageable))
+                .orElse(Page.empty());
+    }
+
+    public List<Attendance> retrieveAttendancesByDatePageable(String date, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate localDate = parseDate(date);
+        String stringDate = formatDateString(localDate);
+        Page<Attendance> attendancePage = this.attendanceJpaRepository.findAllByDatePageable(stringDate, pageable);
+        return returnPage(attendancePage);
+    }
+
+    public List<Attendance> retrieveAttendancesByDateWithIdPageable(String date, long id, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate localDate = parseDate(date);
+        String stringDate = formatDateString(localDate);
+
+        Employees employee = employeeJpaRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Employee is not in the record!"));
+
+        List<Attendance> attendanceList = attendanceJpaRepository.findAllByDatePageable(stringDate, pageable)
+                .stream()
+                .filter(attendance -> attendance.getEmployee().getEmployeeId() == employee.getEmployeeId())
+                .collect(Collectors.toList());
+
+        Page<Attendance> attendancesPage = new PageImpl<>(attendanceList, pageable, attendanceList.size());
+        return returnPage(attendancesPage);
+    }
+
+
+    private List<Attendance> returnPage(Page<Attendance> attendancePage) {
         if (attendancePage.isEmpty()) {
             return Collections.emptyList();
         }
         return attendancePage.getContent();
-    }
-
-    public Page<Attendance> retrieveAttendancesByEmployeeId(long id, Pageable pageable) {
-        return employeeJpaRepository.findById(id)
-                .map(employee -> attendanceJpaRepository.findAllByEmployeeWithPageable(employee, pageable))
-                .orElse(Page.empty());
     }
 
     public ResponseEntity<Void> createAttendance(Attendance attendance) {
@@ -180,6 +211,10 @@ public class AttendanceService {
             }
         }
         throw new IllegalArgumentException("Invalid time format: " + time);
+    }
+
+    private String formatDateString(LocalDate localDate) {
+        return LocalDate.parse(localDate.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")).toString();
     }
 
     private boolean isDateOutsideRange(LocalDate date, LocalDate start, LocalDate end) {
