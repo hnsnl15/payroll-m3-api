@@ -12,9 +12,9 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "person_type")
-@JsonIgnoreProperties(allowSetters = true, value = {"password"}, ignoreUnknown = true)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Employees extends Person {
 
     private String lastName;
