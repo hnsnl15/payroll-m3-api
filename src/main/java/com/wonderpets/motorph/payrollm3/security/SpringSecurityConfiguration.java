@@ -49,15 +49,16 @@ public class SpringSecurityConfiguration {
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/h2-console/**"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.authorizeHttpRequests(auth ->
+        return httpSecurity.cors().and()
+                .authorizeHttpRequests(auth ->
                         auth.requestMatchers(WHITELIST).permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(header -> header.frameOptions().sameOrigin())
+                .httpBasic(Customizer.withDefaults())
                 .oauth2ResourceServer(auth -> {
                     try {
                         auth.jwt().decoder(jwtDecoder());
@@ -66,8 +67,6 @@ public class SpringSecurityConfiguration {
                     }
                 })
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
-                .cors().and()
                 .build();
     }
 
