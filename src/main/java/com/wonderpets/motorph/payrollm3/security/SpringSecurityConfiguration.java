@@ -15,9 +15,10 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,8 +28,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.security.KeyPair;
@@ -57,22 +56,18 @@ public class SpringSecurityConfiguration {
         return httpSecurity.authorizeHttpRequests(auth ->
                         auth.requestMatchers(WHITELIST).permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(header -> header.frameOptions().sameOrigin())
+                .oauth2ResourceServer(auth -> {
+                    try {
+                        auth.jwt().decoder(jwtDecoder());
+                    } catch (JOSEException | NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .headers().frameOptions().sameOrigin().and()
-                .csrf().disable()
+                .cors().and()
                 .build();
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedMethods("*")
-                        .allowedOrigins("*");
-            }
-        };
     }
 
     @Bean
@@ -113,7 +108,7 @@ public class SpringSecurityConfiguration {
     ) {
         var jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
         if (!jdbcUserDetailsManager.userExists(username)) {
-            User admin = (User) User.withUsername(username)
+            UserDetails admin = User.withUsername(username)
                     .password(password)
                     .passwordEncoder(str -> passwordEncoder().encode(str))
                     .roles(Role.ADMIN.toString())
@@ -136,9 +131,9 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public RSAKey rsaKey(KeyPair keyPair) {
-        return new com.nimbusds.jose.jwk.RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
-                .privateKey(keyPair.getPrivate())
+    public RSAKey rsaKey() throws NoSuchAlgorithmException {
+        return new com.nimbusds.jose.jwk.RSAKey.Builder((RSAPublicKey) keyPair().getPublic())
+                .privateKey(keyPair().getPrivate())
                 .keyID(UUID.randomUUID().toString())
                 .build();
     }
@@ -146,12 +141,12 @@ public class SpringSecurityConfiguration {
     @Bean
     public JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) {
         var jwkSet = new JWKSet(rsaKey);
-        return (jwkSelector, context) -> jwkSelector.select(jwkSet);
+        return (((jwkSelector, context) -> jwkSelector.select(jwkSet)));
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(RSAKey rsaKey) throws JOSEException {
-        return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey())
+    public JwtDecoder jwtDecoder() throws JOSEException, NoSuchAlgorithmException {
+        return NimbusJwtDecoder.withPublicKey(rsaKey().toRSAPublicKey())
                 .build();
     }
 
