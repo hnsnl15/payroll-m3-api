@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.wonderpets.motorph.payrollm3.model.Employees.generateUsername;
+
 @Service
 @Transactional
 public class EmployeeService {
@@ -94,11 +96,11 @@ public class EmployeeService {
         if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent())
             throw new UserAlreadyCreatedException("Username is not available.");
 
-        if (employee.getPassword() == null)
-            throw new IllegalArgumentException("Password cannot be null.");
+        if (employee.getPassword() == null) employee.setPassword("password123");
 
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(encodedPassword);
+        employee.setUsername(generateUsername(employee.getFirstName(), employee.getLastName()));
         userDetailsService(employee.getUsername(), encodedPassword);
         Employees createdEmployee = employeeJpaRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
