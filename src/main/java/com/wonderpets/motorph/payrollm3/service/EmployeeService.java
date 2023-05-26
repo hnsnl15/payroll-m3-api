@@ -93,14 +93,15 @@ public class EmployeeService {
     }
 
     public ResponseEntity<Void> createEmployee(Employees employee) {
-        if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent())
-            throw new UserAlreadyCreatedException("Username is not available.");
-
         if (employee.getPassword() == null) employee.setPassword("password123");
 
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(encodedPassword);
         employee.setUsername(generateUsername(employee.getFirstName(), employee.getLastName()));
+
+        if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent())
+            throw new UserAlreadyCreatedException("Username is not available.");
+
         userDetailsService(employee.getUsername(), encodedPassword);
         Employees createdEmployee = employeeJpaRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
