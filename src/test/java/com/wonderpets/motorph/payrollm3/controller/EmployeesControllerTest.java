@@ -203,8 +203,8 @@ public class EmployeesControllerTest {
         this.attendanceJpaRepository.save(attendance);
         attendance.setDate(String.valueOf(LocalDate.now()));
         this.attendanceJpaRepository.save(attendance);
-        mockGetOption("/api/v1/employees/get-calculation-data/" + employee.getUsername()
-                + "?startDate=" + attendance.getDate() + "&endDate=" + LocalDate.now()).andExpect(status().isOk());
+        mockPostOption("/api/v1/employees/get-calculation-data/" + employee.getUsername()
+                + "?startDate=" + attendance.getDate() + "&endDate=" + LocalDate.now(), employee).andExpect(status().isOk());
     }
 
 
