@@ -172,6 +172,7 @@ public class EmployeeService {
         Optional<Employees> employee = retrieveEmployeeByUsername(username);
         long hoursWorked = attendanceService.calculateHoursWorked(username, startDate, endDate);
         long leaveHours = calculateLeaveHours(username, startDate, endDate);
+        if (employee.isEmpty()) throw new UserNotFoundException("Employee is not in the records.");
         BigDecimal rate = employee.get().getHourlyRate();
         return rate.multiply(BigDecimal.valueOf(hoursWorked - leaveHours)).doubleValue();
     }

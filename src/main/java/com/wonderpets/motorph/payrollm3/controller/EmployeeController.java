@@ -78,7 +78,7 @@ public class EmployeeController {
         return this.employeeService.updateEmployeeById(id, employee);
     }
 
-    @GetMapping("/v1/employees/get-calculation-data/{username}")
+    @PostMapping("/v1/employees/get-calculation-data/{username}")
     public Map<String, Double> retrieveCalculationData(@PathVariable String username,
                                                        @RequestParam String startDate,
                                                        @RequestParam String endDate) {
