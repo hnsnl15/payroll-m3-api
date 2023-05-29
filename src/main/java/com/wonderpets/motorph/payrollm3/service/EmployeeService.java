@@ -2,6 +2,7 @@ package com.wonderpets.motorph.payrollm3.service;
 
 import com.wonderpets.motorph.payrollm3.exception.UserAlreadyCreatedException;
 import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
+import com.wonderpets.motorph.payrollm3.jpa.AttendanceJpaRepository;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.Role;
@@ -35,15 +36,18 @@ public class EmployeeService {
     private final DataSource dataSource;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AttendanceService attendanceService;
+    private final AttendanceJpaRepository attendanceJpaRepository;
 
     public EmployeeService(EmployeeJpaRepository employeeJpaRepository,
                            DataSource dataSource,
                            BCryptPasswordEncoder passwordEncoder,
-                           AttendanceService attendanceService) {
+                           AttendanceService attendanceService,
+                           AttendanceJpaRepository attendanceJpaRepository) {
         this.employeeJpaRepository = employeeJpaRepository;
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
         this.attendanceService = attendanceService;
+        this.attendanceJpaRepository = attendanceJpaRepository;
     }
 
     public void userDetailsService(String username, String password) {
@@ -88,8 +92,13 @@ public class EmployeeService {
     public ResponseEntity<Void> deleteEmployeeById(long id) {
         if (this.employeeJpaRepository.findById(id).isEmpty())
             throw new UserNotFoundException("Unable to delete employee, employee not found.");
-        this.employeeJpaRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        Optional<Employees> employee = this.employeeJpaRepository.findById(id);
+        if (employee.isPresent()) {
+            this.attendanceJpaRepository.deleteAllByEmployee(employee.get());
+            this.employeeJpaRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     public ResponseEntity<Void> createEmployee(Employees employee) {
