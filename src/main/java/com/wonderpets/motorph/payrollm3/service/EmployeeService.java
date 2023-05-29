@@ -127,9 +127,11 @@ public class EmployeeService {
         if (optionalEmployees.isPresent()) {
             employee.setUsername(optionalEmployees.get().getUsername());
             employee.setPassword(optionalEmployees.get().getPassword());
+            employee.setUserRole(optionalEmployees.get().getUserRole());
+            employeeJpaRepository.save(employee);
+            return ResponseEntity.ok().build();
         }
-        employeeJpaRepository.save(employee);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 
     public Map<String, Double> retrieveCalculationData(String username, String startDate, String endDate) {
