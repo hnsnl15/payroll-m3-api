@@ -23,5 +23,7 @@ public interface AttendanceJpaRepository extends JpaRepository<Attendance, Long>
 
     Optional<Attendance> findByName(String name);
 
+    Optional<Attendance> findByDate(String date);
+
     void deleteAllByEmployee(Employees employee);
 }
