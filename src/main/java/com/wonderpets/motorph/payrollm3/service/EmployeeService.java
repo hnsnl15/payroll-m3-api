@@ -123,6 +123,11 @@ public class EmployeeService {
     public ResponseEntity<Void> updateEmployeeById(long id, Employees employee) {
         if (employeeJpaRepository.findById(id).isEmpty())
             throw new UserNotFoundException("Employee is not on the record");
+        Optional<Employees> optionalEmployees = this.employeeJpaRepository.findById(id);
+        if (optionalEmployees.isPresent()) {
+            employee.setUsername(optionalEmployees.get().getUsername());
+            employee.setPassword(optionalEmployees.get().getPassword());
+        }
         employeeJpaRepository.save(employee);
         return ResponseEntity.ok().build();
     }
