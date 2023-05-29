@@ -46,13 +46,20 @@ public class InventoryService {
         return inventoryList;
     }
 
+    public List<Inventory> retrieveStocksPageable(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Inventory> inventoryPage = this.inventoryJpaRepository.findAll(pageable);
+        if (inventoryPage.isEmpty()) return Collections.emptyList();
+        return inventoryPage.getContent();
+    }
+
     public Optional<Inventory> retrieveStockById(long id) {
         Optional<Inventory> stock = this.inventoryJpaRepository.findById(id);
         if (stock.isEmpty()) throw new StockNotFoundException("Stock is not in the record.");
         return stock;
     }
 
-    public List<Inventory> retrieveStocksByPagination(int page, int size, String engineNumber) {
+    public List<Inventory> retrieveStocksByEngineNumberPageable(int page, int size, String engineNumber) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Inventory> inventoryPage = retrieveStocksByEngineNumber(engineNumber, pageable);
         if (inventoryPage.isEmpty()) return Collections.emptyList();

@@ -54,9 +54,9 @@ public class InventoryController {
 
     @GetMapping("/v2/inventory")
     public List<EntityModel<Inventory>> retrieveStockByPagination(@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "5") int size,
-                                                                  @RequestParam String engineNumber) {
-        return wrapListOfInventoryIntoEntityModels(this.inventoryService.retrieveStocksByPagination(page, size, engineNumber));
+                                                                  @RequestParam(defaultValue = "5") int size
+    ) {
+        return wrapListOfInventoryIntoEntityModels(this.inventoryService.retrieveStocksPageable(page, size));
     }
 
     @PostMapping("/v1/inventory/create-stock")
