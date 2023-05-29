@@ -22,4 +22,8 @@ public interface AttendanceJpaRepository extends JpaRepository<Attendance, Long>
     Page<Attendance> findAllByDatePageable(@Param("date") String date, Pageable pageable);
 
     Optional<Attendance> findByName(String name);
+
+    Optional<Attendance> findByDate(String date);
+
+    void deleteAllByEmployee(Employees employee);
 }

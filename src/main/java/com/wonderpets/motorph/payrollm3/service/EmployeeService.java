@@ -2,6 +2,7 @@ package com.wonderpets.motorph.payrollm3.service;
 
 import com.wonderpets.motorph.payrollm3.exception.UserAlreadyCreatedException;
 import com.wonderpets.motorph.payrollm3.exception.UserNotFoundException;
+import com.wonderpets.motorph.payrollm3.jpa.AttendanceJpaRepository;
 import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import com.wonderpets.motorph.payrollm3.model.Role;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.wonderpets.motorph.payrollm3.model.Employees.generateUsername;
+
 @Service
 @Transactional
 public class EmployeeService {
@@ -33,15 +36,18 @@ public class EmployeeService {
     private final DataSource dataSource;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AttendanceService attendanceService;
+    private final AttendanceJpaRepository attendanceJpaRepository;
 
     public EmployeeService(EmployeeJpaRepository employeeJpaRepository,
                            DataSource dataSource,
                            BCryptPasswordEncoder passwordEncoder,
-                           AttendanceService attendanceService) {
+                           AttendanceService attendanceService,
+                           AttendanceJpaRepository attendanceJpaRepository) {
         this.employeeJpaRepository = employeeJpaRepository;
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
         this.attendanceService = attendanceService;
+        this.attendanceJpaRepository = attendanceJpaRepository;
     }
 
     public void userDetailsService(String username, String password) {
@@ -86,19 +92,25 @@ public class EmployeeService {
     public ResponseEntity<Void> deleteEmployeeById(long id) {
         if (this.employeeJpaRepository.findById(id).isEmpty())
             throw new UserNotFoundException("Unable to delete employee, employee not found.");
-        this.employeeJpaRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        Optional<Employees> employee = this.employeeJpaRepository.findById(id);
+        if (employee.isPresent()) {
+            this.attendanceJpaRepository.deleteAllByEmployee(employee.get());
+            this.employeeJpaRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     public ResponseEntity<Void> createEmployee(Employees employee) {
-        if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent())
-            throw new UserAlreadyCreatedException("Username is not available.");
-
-        if (employee.getPassword() == null)
-            throw new IllegalArgumentException("Password cannot be null.");
+        if (employee.getPassword() == null) employee.setPassword("password123");
 
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(encodedPassword);
+        employee.setUsername(generateUsername(employee.getFirstName(), employee.getLastName()));
+
+        if (employeeJpaRepository.findByUsername(employee.getUsername()).isPresent())
+            throw new UserAlreadyCreatedException("Username is not available.");
+
         userDetailsService(employee.getUsername(), encodedPassword);
         Employees createdEmployee = employeeJpaRepository.save(employee);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -109,9 +121,30 @@ public class EmployeeService {
     }
 
     public ResponseEntity<Void> updateEmployeeById(long id, Employees employee) {
-        if (employeeJpaRepository.findById(id).isEmpty())
+        Optional<Employees> optionalEmployees = employeeJpaRepository.findById(id);
+        if (optionalEmployees.isEmpty()) {
             throw new UserNotFoundException("Employee is not on the record");
-        employeeJpaRepository.save(employee);
+        }
+        Employees retrievedEmployee = optionalEmployees.get();
+        retrievedEmployee.setFirstName(employee.getFirstName());
+        retrievedEmployee.setLastName(employee.getLastName());
+        retrievedEmployee.setBirthday(employee.getBirthday());
+        retrievedEmployee.setAddress(employee.getAddress());
+        retrievedEmployee.setPhoneNumber(employee.getPhoneNumber());
+        retrievedEmployee.setSssNo(employee.getSssNo());
+        retrievedEmployee.setPhilhealthNo(employee.getPhilhealthNo());
+        retrievedEmployee.setTinNo(employee.getTinNo());
+        retrievedEmployee.setPagibigNo(employee.getPagibigNo());
+        retrievedEmployee.setStatus(employee.getStatus());
+        retrievedEmployee.setPosition(employee.getPosition());
+        retrievedEmployee.setImmediateSupervisor(employee.getImmediateSupervisor());
+        retrievedEmployee.setBasicSalary(employee.getBasicSalary().doubleValue());
+        retrievedEmployee.setRiceSubsidy(employee.getRiceSubsidy().doubleValue());
+        retrievedEmployee.setPhoneAllowance(employee.getPhoneAllowance().doubleValue());
+        retrievedEmployee.setClothingAllowance(employee.getClothingAllowance().doubleValue());
+        retrievedEmployee.setGrossSemiMonthlyRate(employee.getGrossSemiMonthlyRate().doubleValue());
+        retrievedEmployee.setHourlyRate(employee.getHourlyRate().doubleValue());
+        employeeJpaRepository.save(retrievedEmployee);
         return ResponseEntity.ok().build();
     }
 
@@ -139,6 +172,7 @@ public class EmployeeService {
         Optional<Employees> employee = retrieveEmployeeByUsername(username);
         long hoursWorked = attendanceService.calculateHoursWorked(username, startDate, endDate);
         long leaveHours = calculateLeaveHours(username, startDate, endDate);
+        if (employee.isEmpty()) throw new UserNotFoundException("Employee is not in the records.");
         BigDecimal rate = employee.get().getHourlyRate();
         return rate.multiply(BigDecimal.valueOf(hoursWorked - leaveHours)).doubleValue();
     }

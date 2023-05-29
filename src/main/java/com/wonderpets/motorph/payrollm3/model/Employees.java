@@ -71,7 +71,7 @@ public class Employees extends Person {
         this.hourlyRate = doubleToBigDecimalConverter(hourlyRate);
     }
 
-    private static String generateUsername(String firstName, String lastName) {
+    public static String generateUsername(String firstName, String lastName) {
         String username = firstName.strip().replace(" ", "")
                 + lastName.strip().replace(" ", "");
         return username.toLowerCase();

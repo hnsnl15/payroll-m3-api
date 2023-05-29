@@ -6,7 +6,6 @@ import com.wonderpets.motorph.payrollm3.jpa.EmployeeJpaRepository;
 import com.wonderpets.motorph.payrollm3.model.Attendance;
 import com.wonderpets.motorph.payrollm3.model.Employees;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -69,29 +67,26 @@ public class AttendanceService {
                 .orElse(Page.empty());
     }
 
-    public List<Attendance> retrieveAttendancesByDatePageable(String date, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Attendance retrieveAttendancesByDatePageable(String date) {
         LocalDate localDate = parseDate(date);
         String stringDate = formatDateString(localDate);
-        Page<Attendance> attendancePage = this.attendanceJpaRepository.findAllByDatePageable(stringDate, pageable);
-        return returnPage(attendancePage);
+        Optional<Attendance> attendancePage = this.attendanceJpaRepository.findByDate(stringDate);
+        if (attendancePage.isEmpty())
+            throw new NoSuchElementException("Attendance for this date is not in the record.");
+        return attendancePage.get();
     }
 
-    public List<Attendance> retrieveAttendancesByDateWithIdPageable(String date, long id, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Attendance retrieveAttendancesByDateWithIdPageable(String date, long id) {
         LocalDate localDate = parseDate(date);
         String stringDate = formatDateString(localDate);
 
         Employees employee = employeeJpaRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Employee is not in the record!"));
 
-        List<Attendance> attendanceList = attendanceJpaRepository.findAllByDatePageable(stringDate, pageable)
-                .stream()
-                .filter(attendance -> attendance.getEmployee().getEmployeeId() == employee.getEmployeeId())
-                .collect(Collectors.toList());
-
-        Page<Attendance> attendancesPage = new PageImpl<>(attendanceList, pageable, attendanceList.size());
-        return returnPage(attendancesPage);
+        Optional<Attendance> optionalAttendance = this.attendanceJpaRepository.findByDate(stringDate);
+        if (optionalAttendance.isEmpty())
+            throw new NoSuchElementException("Attendance for this date is not is the record");
+        return optionalAttendance.get();
     }
 
 
