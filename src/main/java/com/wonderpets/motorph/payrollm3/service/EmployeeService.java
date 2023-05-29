@@ -121,17 +121,31 @@ public class EmployeeService {
     }
 
     public ResponseEntity<Void> updateEmployeeById(long id, Employees employee) {
-        if (employeeJpaRepository.findById(id).isEmpty())
+        Optional<Employees> optionalEmployees = employeeJpaRepository.findById(id);
+        if (optionalEmployees.isEmpty()) {
             throw new UserNotFoundException("Employee is not on the record");
-        Optional<Employees> optionalEmployees = this.employeeJpaRepository.findById(id);
-        if (optionalEmployees.isPresent()) {
-            employee.setUsername(optionalEmployees.get().getUsername());
-            employee.setPassword(optionalEmployees.get().getPassword());
-            employee.setUserRole(optionalEmployees.get().getUserRole());
-            employeeJpaRepository.save(employee);
-            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        Employees retrievedEmployee = optionalEmployees.get();
+        retrievedEmployee.setFirstName(employee.getFirstName());
+        retrievedEmployee.setLastName(employee.getLastName());
+        retrievedEmployee.setBirthday(employee.getBirthday());
+        retrievedEmployee.setAddress(employee.getAddress());
+        retrievedEmployee.setPhoneNumber(employee.getPhoneNumber());
+        retrievedEmployee.setSssNo(employee.getSssNo());
+        retrievedEmployee.setPhilhealthNo(employee.getPhilhealthNo());
+        retrievedEmployee.setTinNo(employee.getTinNo());
+        retrievedEmployee.setPagibigNo(employee.getPagibigNo());
+        retrievedEmployee.setStatus(employee.getStatus());
+        retrievedEmployee.setPosition(employee.getPosition());
+        retrievedEmployee.setImmediateSupervisor(employee.getImmediateSupervisor());
+        retrievedEmployee.setBasicSalary(employee.getBasicSalary().doubleValue());
+        retrievedEmployee.setRiceSubsidy(employee.getRiceSubsidy().doubleValue());
+        retrievedEmployee.setPhoneAllowance(employee.getPhoneAllowance().doubleValue());
+        retrievedEmployee.setClothingAllowance(employee.getClothingAllowance().doubleValue());
+        retrievedEmployee.setGrossSemiMonthlyRate(employee.getGrossSemiMonthlyRate().doubleValue());
+        retrievedEmployee.setHourlyRate(employee.getHourlyRate().doubleValue());
+        employeeJpaRepository.save(retrievedEmployee);
+        return ResponseEntity.ok().build();
     }
 
     public Map<String, Double> retrieveCalculationData(String username, String startDate, String endDate) {
