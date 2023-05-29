@@ -73,9 +73,16 @@ public class InventoryService {
     }
 
     public ResponseEntity<Void> updateStock(long id, Inventory stock) {
-        if (this.inventoryJpaRepository.findById(id).isEmpty())
+        Optional<Inventory> optionalStock = this.inventoryJpaRepository.findById(id);
+        if (optionalStock.isEmpty())
             throw new StockNotFoundException("Stock is not in the record.");
-        this.inventoryJpaRepository.save(stock);
+        Inventory updateStock = optionalStock.get();
+        updateStock.setDateEntered(stock.getDateEntered());
+        updateStock.setStockLabel(stock.getStockLabel());
+        updateStock.setStatus(stock.getStatus());
+        updateStock.setEngineNumber(stock.getEngineNumber());
+        updateStock.setBrand(stock.getBrand());
+        this.inventoryJpaRepository.save(updateStock);
         return ResponseEntity.ok().build();
     }
 
